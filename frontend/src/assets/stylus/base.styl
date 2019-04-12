@@ -1,0 +1,40 @@
+// 基础容器布局
+.container
+  flex-grow 1
+  display flex
+  padding-top 20px
+  z-index 0
+  .real-content
+    display flex
+    &.horiz
+      flex-direction column
+
+// 区域块布局
+.section
+  display flex
+  flex-direction column
+  .section-title
+    flex 0 0 50px
+    display flex
+    align-items center
+    padding-left 10px
+    border-bottom 1px solid $bd-color
+    h4
+      font-size $secondary-size
+      font-weight 700
+  .section-content
+    flex-grow 1
+    .section-item
+      height 40px
+      line-height 40px
+      padding-left 10px
+      cursor pointer
+      transition background-color .3s, color .3s
+      &:hover
+        color $hover-text-color
+        background-color $hover-bg-color
+      &.active
+        color $primary-color
+        background-color $hover-bg-color
+  &:not(:last-child)
+    border-right 1px solid $bd-color

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="10 seconds">
+
+  <contextName>asl-teamnote</contextName>
+
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <!-- 典型的日志pattern -->
+    <encoder>
+      <pattern>%date{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- 综合时间与大小的滚动策略，先按小时滚动，小时内的文件大于10mb时再按大小滚动 -->
+  <appender name="defaultLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <!-- 过滤 Error -->
+      <level>ERROR</level>
+      <!-- 匹配到就禁止 -->
+      <onMatch>DENY</onMatch>
+      <!-- 没有匹配到就允许 -->
+      <onMismatch>ACCEPT</onMismatch>
+    </filter>
+
+    <file>/opt/asl-logs/asl-teamnote.log</file>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>/opt/asl-logs/asl-teamnote-%d{yyyy-MM-dd}-%i.zip</fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>10MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- 主要记录业务异常日志，先按小时滚动，小时内的文件大于10mb时再按大小滚动 -->
+  <appender name="simpleExceptionLogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!-- 只获取ERROR级别 -->
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>ERROR</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+
+    <file>/opt/asl-logs/asl-teamnote-error.log</file>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>/opt/asl-logs/asl-teamnote-error-%d{yyyy-MM-dd}-%i.zip</fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>10MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+
+    <encoder>
+      <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- project default level -->
+  <logger name="com.asing1elife.teamnote" level="DEBUG"/>
+
+  <logger name="org.springframework" level="ERROR"/>
+
+  <!-- root -->
+  <root level="INFO">
+    <appender-ref ref="console"/>
+    <appender-ref ref="defaultLogFile"/>
+  </root>
+</configuration>

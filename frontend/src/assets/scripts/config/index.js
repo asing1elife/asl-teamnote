@@ -1,0 +1,13 @@
+// 接入服务器接口地址根目录
+export const serverBaseUrl = '/teamnote'
+
+// 请求方式
+export const GET = 'get'
+export const POST = 'post'
+export const PUT = 'put'
+export const DELETE = 'delete'
+
+// 状态码
+export const SUCCESS_CODE = '200'
+export const ERROR_CODE = '400'
+export const UNAUTHORIZED_CODE = '401'

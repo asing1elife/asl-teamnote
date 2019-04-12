@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/asl_station?characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      naming:
+        # 实体类与数据库字段映射规则为驼峰式
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+
+  # 防止Hibernate在获取单个实体类时出现的默认空字段被转换
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+server:
+  port: 8091
+  servlet:
+    context-path: /teamnote
