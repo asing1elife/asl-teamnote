@@ -11,6 +11,7 @@ import com.asing1elife.teamnote.module.task.repository.TaskRepository;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
     /**
      * 更新状态
      */
+    @Transactional
     public void status(Long taskId, String statusCode) {
         TaskStatus status = new TaskStatus(statusCode);
 
@@ -72,6 +74,21 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
         updateDailyRecordTaskRelation(task);
 
         super.save(task);
+    }
+
+    /**
+     * 删除任务
+     */
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        // 先删除与之关联的任务日志
+        TaskModel task = super.getOne(id);
+        task.setRecords(null);
+        super.save(task);
+
+        // 再删除任务
+        super.delete(id);
     }
 
     /**

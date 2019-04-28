@@ -322,7 +322,7 @@
           onOk: () => {
             this.$api.project.del(projectId).then((res) => {
               if (res.success) {
-                this.$Message.success('删除成功！')
+                this.$Message.success('删除成功')
 
                 this._getProjects()
               }
@@ -369,11 +369,11 @@
       delTask (task) {
         this.$Modal.confirm({
           title: '操作确认',
-          content: '确认删除该任务？',
+          content: '相关的日志记录也会一起被删除，确认删除该任务？',
           onOk: () => {
             this.$api.task.del(task.id).then((res) => {
               if (res.success) {
-                this.$Message.success('删除成功！')
+                this.$Message.success('删除成功')
 
                 this._updateProjectTasks(task.project.id)
               }

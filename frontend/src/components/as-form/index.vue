@@ -63,7 +63,7 @@
                 // 执行外部传入的成功回调，并将返回的内容传出
                 success.call(this, res)
 
-                this.$Message.success('保存成功！')
+                this.$Message.success('保存成功')
               }
             })
           } else {

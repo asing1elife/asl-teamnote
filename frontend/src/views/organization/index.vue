@@ -93,7 +93,7 @@
           onOk: () => {
             this.$api.organization.del(organizationId).then((res) => {
               if (res.success) {
-                this.$Message.success('删除成功！')
+                this.$Message.success('删除成功')
 
                 this._getOrganizations()
               }
