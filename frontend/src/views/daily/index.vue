@@ -59,14 +59,17 @@
         </div>
       </div>
       <div class="section-content">
-        <p class="task-item" v-for="(task, index) in dailyRecord.tasks"
-           :key="task.id">
-          {{index + 1}}.
-          <i-tag :color="task.taskTag.color">{{task.taskTag.name}}</i-tag>
-          <i-tag :color="getTaskStatusColor(task.status.code)">{{task.status.name}}</i-tag>
-          <i-tag color="cyan">{{task.project.name}}</i-tag>
-          {{task.name}}
-        </p>
+        <i-tooltip placement="right" max-width="140"
+                   v-for="(task, index) in dailyRecord.tasks"
+                   :key="task.id" :content="getTaskDateInterval(task)">
+          <p class="task-item">
+            <i-tag type="border" color="primary">{{index + 1}}.</i-tag>
+            <i-tag :color="task.taskTag.color">{{task.taskTag.name}}</i-tag>
+            <i-tag :color="getTaskStatusColor(task.status.code)">{{task.status.name}}</i-tag>
+            <i-tag color="cyan">{{task.project.name}}</i-tag>
+            <i-tag type="border" color="purple">{{task.name}}</i-tag>
+          </p>
+        </i-tooltip>
       </div>
     </div>
   </div>
@@ -192,6 +195,10 @@
       // 获取任务状态颜色
       getTaskStatusColor (code) {
         return TaskStatus.getDictionaryColor(code)
+      },
+      // 获取任务时间段
+      getTaskDateInterval (task) {
+        return `${task.beginDate} ${task.finishDate || '~'}`
       },
       // 更新加班状态
       changeExtra (val) {

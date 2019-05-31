@@ -46,7 +46,7 @@ export function removeClass (el, className) {
 /**
  * 判断是否存在class
  * @param el 需要被判断的对象
- * @param className 带判断是否存在的class名称
+ * @param className 待判断是否存在的class名称
  */
 export function hasClass (el, className) {
   // 定义正则来判断class是否存在
@@ -55,6 +55,18 @@ export function hasClass (el, className) {
 
   // 使用定义好的正则表达式对el的所有className进行匹配，直接返回匹配结果
   return reg.test(el.className)
+}
+
+/**
+ * 判断当前标签的名称是否为传入的标签名称
+ * @param el 需要被判断的对象
+ * @param targetTagName 待判断是否相等的标签名称
+ */
+export function isTargetTag (el, targetTagName) {
+  // \\s表示空白字符
+  let reg = new RegExp('(^|\\s)' + targetTagName + '(\\s|$)')
+
+  return reg.test(el.tagName.toLowerCase())
 }
 
 /**

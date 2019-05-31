@@ -7,10 +7,14 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
 
-  # 防止Hibernate在获取单个实体类时出现的默认空字段被转换
   jackson:
     serialization:
+      # 防止Hibernate在获取单个实体类时出现的默认空字段被转换
       fail-on-empty-beans: false
+    # 日期格式化
+    date-format: yyyy-MM-dd HH:mm:ss
+    # 时区
+    time-zone: GMT+8
 
   profiles:
     active: dev

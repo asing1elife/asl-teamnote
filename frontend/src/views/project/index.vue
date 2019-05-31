@@ -18,7 +18,7 @@
           </i-dropdown-item>
         </i-dropdown-menu>
       </i-dropdown>
-      <p slot="title">{{project.name}}</p>
+      <p slot="title">{{project.name}} · <span class="text-mute">{{project.tasks.length}}</span></p>
       <div class="project-task-list">
         <div class="task-item"
              v-for="task in project.tasks"
@@ -142,7 +142,7 @@
   import Task from 'model/task'
   import TaskTag from 'model/taskTag'
   import { TaskLevel, TaskStatus } from 'model/dictionary'
-  import { hasClass } from 'assets/scripts/dom'
+  import { isTargetTag } from 'assets/scripts/dom'
 
   export default {
     name: 'project',
@@ -299,7 +299,7 @@
       },
       openTaskModal (event, taskId, projectId) {
         // 防止更新状态或删除任务时打开窗口
-        if (hasClass(event.target, 'ivu-dropdown-item') || hasClass(event.target, 'jam')) {
+        if (!isTargetTag(event.target, 'div') && taskId !== -1) {
           return
         }
 
