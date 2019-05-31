@@ -21,6 +21,6 @@ public interface TaskRepository extends BaseRepository<TaskModel, Long> {
     /**
      * 获取指定状态任务列表
      */
-    List<TaskModel> findByStatus(TaskStatus status);
+    List<TaskModel> findByProject_Organization_idAndStatus(long organization, TaskStatus status);
 
 }

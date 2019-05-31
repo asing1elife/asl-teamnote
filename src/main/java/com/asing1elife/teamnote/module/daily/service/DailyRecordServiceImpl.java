@@ -21,7 +21,7 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
     /**
      * 获取指定日志所有记录
      */
-    public List<DailyRecordModel> getDailyRecordsByDaily(Long dailyId) {
+    public List<DailyRecordModel> getDailyRecordsByDaily(long dailyId) {
         return repository.findByDaily_IdOrderByDayAsc(dailyId);
     }
 
@@ -29,7 +29,7 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
      * 检查当天日志，不存在则创建
      */
     @Transactional
-    public DailyRecordModel checkOrSaveDailyRecord(DailyModel daily) {
+    public DailyRecordModel checkOrSaveDailyRecord(DailyModel daily, long organizationId) {
         // 获取当天的日期
         int currentDay = DateUtil.getCurrentDay();
 
@@ -38,7 +38,7 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
 
         // 不存在则创建
         if (dailyRecord == null) {
-            dailyRecord = saveDailyRecord(daily, currentDay);
+            dailyRecord = saveDailyRecord(daily, organizationId, currentDay);
         }
 
         return dailyRecord;
@@ -54,7 +54,7 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
     /**
      * 更新日志记录加班标识
      */
-    public void updateDailyRecordExtra(Long recordId, Boolean isExtra) {
+    public void updateDailyRecordExtra(long recordId, boolean isExtra) {
         DailyRecordModel dailyRecord = super.getOne(recordId);
         dailyRecord.setExtra(isExtra);
 
@@ -64,7 +64,7 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
     /**
      * 更新日志记录还班标识
      */
-    public void updateDailyRecordRepay(Long recordId, Boolean isRepay) {
+    public void updateDailyRecordRepay(long recordId, boolean isRepay) {
         DailyRecordModel dailyRecord = super.getOne(recordId);
         dailyRecord.setRepay(isRepay);
 
@@ -74,12 +74,12 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
     /**
      * 保存日志记录
      */
-    private DailyRecordModel saveDailyRecord(DailyModel daily, int currentDay) {
+    private DailyRecordModel saveDailyRecord(DailyModel daily, long organizationId, int currentDay) {
         DailyRecordModel dailyRecord = new DailyRecordModel();
         dailyRecord.setDaily(daily);
         dailyRecord.setDay(currentDay);
         // 每次新建日志记录时，将之前所有处于进行中的任务都加入到当天的日志中
-        dailyRecord.setTasks(taskService.findByImplTasks());
+        dailyRecord.setTasks(taskService.findByImplTasks(organizationId));
 
         super.save(dailyRecord);
 

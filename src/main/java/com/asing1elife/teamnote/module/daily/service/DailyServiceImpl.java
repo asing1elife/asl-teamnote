@@ -45,7 +45,7 @@ public class DailyServiceImpl extends BaseService<DailyModel, DailyRepository> {
         }
 
         // 尝试获取当天的日志，不存在则内部创建
-        return dailyRecordService.checkOrSaveDailyRecord(currentMonthDaily);
+        return dailyRecordService.checkOrSaveDailyRecord(currentMonthDaily, organizationId);
     }
 
     private Map<Integer, List<DailyModel>> generateDailiesOfYear(long organizationId) {

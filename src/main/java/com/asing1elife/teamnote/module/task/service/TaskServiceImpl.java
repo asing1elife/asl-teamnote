@@ -43,8 +43,8 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
     /**
      * 获取进行中的任务列表
      */
-    public List<TaskModel> findByImplTasks() {
-        return repository.findByStatus(TaskStatus.TAST_Impl);
+    public List<TaskModel> findByImplTasks(long organizationId) {
+        return repository.findByProject_Organization_idAndStatus(organizationId, TaskStatus.TAST_Impl);
     }
 
     /**
