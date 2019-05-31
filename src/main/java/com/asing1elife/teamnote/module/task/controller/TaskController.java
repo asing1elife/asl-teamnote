@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class TaskController extends BaseController<TaskModel, TaskServiceImpl> {
 
     @PostMapping("")
-    public ResponseData tasks(@RequestParam Long projectId) {
+    public ResponseData tasks(@RequestParam long projectId) {
         return new ControllerHandler() {
             @Override
             public void doHandler(ResponseData responseData) {
@@ -22,11 +22,11 @@ public class TaskController extends BaseController<TaskModel, TaskServiceImpl> {
     }
 
     @PutMapping("/{taskId}/status")
-    public ResponseData status(@PathVariable Long taskId, @RequestParam String statusCode) {
+    public ResponseData status(@PathVariable long taskId, @RequestParam long organizationId, @RequestParam String statusCode) {
         return new ControllerHandler() {
             @Override
             public void doHandler(ResponseData responseData) {
-                service.status(taskId, statusCode);
+                service.status(taskId, organizationId, statusCode);
             }
         }.handle();
     }

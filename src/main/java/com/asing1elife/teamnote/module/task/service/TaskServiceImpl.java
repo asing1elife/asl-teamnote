@@ -27,7 +27,7 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
     /**
      * 获取指定项目所有任务
      */
-    public List<TaskModel> findByProjectId(Long projectId) {
+    public List<TaskModel> findByProjectId(long projectId) {
         List<TaskModel> tasks = Lists.newArrayList();
 
         // 先获取初始化和进行中的任务
@@ -51,7 +51,7 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
      * 更新状态
      */
     @Transactional
-    public void status(Long taskId, String statusCode) {
+    public void status(long taskId, long organizationId, String statusCode) {
         TaskStatus status = new TaskStatus(statusCode);
 
         TaskModel task = super.getOne(taskId);
@@ -71,7 +71,7 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
         }
 
         // 更新日志记录和任务的关联
-        updateDailyRecordTaskRelation(task);
+        updateDailyRecordTaskRelation(task, organizationId);
 
         super.save(task);
     }
@@ -81,7 +81,7 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
      */
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void delete(long id) {
         // 先删除与之关联的任务日志
         TaskModel task = super.getOne(id);
         task.setRecords(null);
@@ -94,10 +94,10 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
     /**
      * 更新日志记录和任务的关联
      */
-    private void updateDailyRecordTaskRelation(TaskModel task) {
+    private void updateDailyRecordTaskRelation(TaskModel task, long organizationId) {
         // 获取或新增日志及日志记录
         // 因为日志和日志记录默认是每次点击日志tab时检测并创建，但有可能一开始进入页面直接对任务进行操作，所以此处也需要检测
-        DailyRecordModel record = dailyService.getOrSaveDailyAndRecord();
+        DailyRecordModel record = dailyService.getOrSaveDailyAndRecord(organizationId);
         // 获取日志记录任务列表
         List<TaskModel> tasks = record.getTasks();
 

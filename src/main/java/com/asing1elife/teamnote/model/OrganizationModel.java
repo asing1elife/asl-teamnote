@@ -21,4 +21,10 @@ public class OrganizationModel extends BaseModel {
     @Column
     private Boolean isStar = false;
 
+    public OrganizationModel() {
+    }
+
+    public OrganizationModel(long id) {
+        super.setId(id);
+    }
 }

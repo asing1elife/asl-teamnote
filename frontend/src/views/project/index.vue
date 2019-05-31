@@ -361,7 +361,7 @@
       },
       // 修改状态
       updateTaskStatus (name, task) {
-        this.$api.task.status(task.id, name).then(() => {
+        this.$api.task.status(task.id, this.$parent.organizationId, name).then(() => {
           this._updateProjectTasks(task.project.id)
         })
       },

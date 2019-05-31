@@ -5,19 +5,18 @@ import com.asing1elife.teamnote.core.controller.BaseController;
 import com.asing1elife.teamnote.core.handle.ControllerHandler;
 import com.asing1elife.teamnote.model.DailyModel;
 import com.asing1elife.teamnote.module.daily.service.DailyServiceImpl;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/dailies")
 public class DailyController extends BaseController<DailyModel, DailyServiceImpl> {
 
-    @Override
-    public ResponseData list() {
+    @PostMapping("")
+    public ResponseData lists(@RequestParam Long organizationId) {
         return new ControllerHandler() {
             @Override
             public void doHandler(ResponseData responseData) {
-                responseData.setData(service.getDailiesByYear());
+                responseData.setData(service.getDailiesByYear(organizationId));
             }
         }.handle();
     }

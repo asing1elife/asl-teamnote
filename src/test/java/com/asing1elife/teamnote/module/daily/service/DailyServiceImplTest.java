@@ -26,7 +26,7 @@ public class DailyServiceImplTest {
 
     @Test
     public void getDailiesByYearTest() {
-        Map<Integer, List<DailyModel>> dailyMap = dailyService.getDailiesByYear();
+        Map<Integer, List<DailyModel>> dailyMap = dailyService.getDailiesByYear(2L);
 
         dailyMap.keySet().forEach(key -> {
             System.out.printf("YEAR -> %s \n", key);

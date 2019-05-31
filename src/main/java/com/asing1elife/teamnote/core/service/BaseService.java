@@ -6,11 +6,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public class BaseService<T, Repository extends BaseRepository<T, Long>> implements DefaultService {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    protected HttpServletRequest request;
 
     @Autowired
     protected Repository repository;
@@ -20,7 +24,7 @@ public class BaseService<T, Repository extends BaseRepository<T, Long>> implemen
         return repository.save(t);
     }
 
-    public void delete(Long id) {
+    public void delete(long id) {
         logger.info("remove entity id -> {}", id);
         repository.deleteById(id);
     }
@@ -32,7 +36,7 @@ public class BaseService<T, Repository extends BaseRepository<T, Long>> implemen
         return all;
     }
 
-    public T getOne(Long id) {
+    public T getOne(long id) {
         T t = repository.getOne(id);
 
         logger.info("getOne entity -> {}", t);

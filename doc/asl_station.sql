@@ -139,3 +139,12 @@ CREATE TABLE `al_daily_record_task` (
 -- 日志记录表新增是否还班字段
 ALTER TABLE `al_daily_record`
 ADD COLUMN `isRepay` tinyint(1) COMMENT '是否还班' AFTER `isExtra`;
+
+/* 2019-04-27 */
+-- 日志表新增所属组织字段
+ALTER TABLE `al_daily`
+ADD COLUMN `organization_id` BIGINT(20) COMMENT '所属组织' AFTER `id`;
+
+-- 日志表与组织表增加外键关联
+ALTER TABLE `al_daily`
+ADD CONSTRAINT `fk_daily_organization` FOREIGN KEY (`organization_id`) REFERENCES `al_organization` (`id`);

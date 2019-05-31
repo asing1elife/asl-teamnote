@@ -4,12 +4,16 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
 @Entity
 @Table(name = "al_daily")
 public class DailyModel extends BaseModel {
+
+    @ManyToOne
+    private OrganizationModel organization;
 
     // 所属年份
     @Column

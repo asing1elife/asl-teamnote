@@ -27,12 +27,13 @@ export function del (taskId) {
   })
 }
 
-export function status (taskId, statusCode) {
+export function status (taskId, organizationId, statusCode) {
   let url = `${baseUrl}/${taskId}/status`
 
   return fetch.put({
     url,
     params: {
+      organizationId,
       statusCode
     }
   })

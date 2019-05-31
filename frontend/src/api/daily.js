@@ -2,9 +2,12 @@ import * as fetch from 'assets/scripts/fetch'
 
 export const baseUrl = '/api/dailies'
 
-export function dailies () {
-  return fetch.get({
-    url: baseUrl
+export function dailies (organizationId) {
+  return fetch.post({
+    url: baseUrl,
+    params: {
+      organizationId: organizationId
+    }
   })
 }
 

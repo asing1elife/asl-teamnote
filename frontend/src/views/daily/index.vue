@@ -93,9 +93,9 @@
       this._getDailies()
     },
     methods: {
-      // 获取所有日志
+      // 获取当前组织所有日志
       _getDailies () {
-        this.$api.daily.dailies().then((res) => {
+        this.$api.daily.dailies(this.$parent.organizationId).then((res) => {
           this.dailies = res.data
 
           // 从数据中获取年份
