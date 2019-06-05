@@ -8,6 +8,7 @@ export default class DailyRecord extends Base {
     this.day = 0
     this.extra = false
     this.repay = false
+    this.rest = false
     this.tasks = []
   }
 
@@ -17,6 +18,7 @@ export default class DailyRecord extends Base {
     this.day = data.day
     this.extra = data.extra
     this.repay = data.repay
+    this.rest = data.rest
     this.tasks = data.tasks
   }
 }

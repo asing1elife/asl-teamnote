@@ -135,10 +135,12 @@ CREATE TABLE `al_daily_record_task` (
 	CONSTRAINT `fk_daily_record_task_task` FOREIGN KEY (`task_id`) REFERENCES `al_task` (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 /* 2019-04-02 */
 -- 日志记录表新增是否还班字段
 ALTER TABLE `al_daily_record`
 ADD COLUMN `isRepay` tinyint(1) COMMENT '是否还班' AFTER `isExtra`;
+
 
 /* 2019-04-27 */
 -- 日志表新增所属组织字段
@@ -148,3 +150,9 @@ ADD COLUMN `organization_id` BIGINT(20) COMMENT '所属组织' AFTER `id`;
 -- 日志表与组织表增加外键关联
 ALTER TABLE `al_daily`
 ADD CONSTRAINT `fk_daily_organization` FOREIGN KEY (`organization_id`) REFERENCES `al_organization` (`id`);
+
+
+/* 2019-06-03 */
+-- 日志记录表新增是否休息字段
+ALTER TABLE `al_daily_record`
+ADD COLUMN `isRest` TINYINT(1) DEFAULT 0 COMMENT '是否休息' AFTER `isRepay`;

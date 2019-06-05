@@ -72,6 +72,21 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
     }
 
     /**
+     * 更新日志记录休息标识
+     */
+    @Transactional
+    public void updateDailyRecordRest(long recordId, boolean isRest) {
+        DailyRecordModel dailyRecord = super.getOne(recordId);
+        dailyRecord.setRest(isRest);
+
+        if (isRest) {
+            dailyRecord.setTasks(null);
+        }
+
+        super.save(dailyRecord);
+    }
+
+    /**
      * 保存日志记录
      */
     private DailyRecordModel saveDailyRecord(DailyModel daily, long organizationId, int currentDay) {

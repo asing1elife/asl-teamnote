@@ -41,4 +41,14 @@ public class DailyRecordController extends BaseController<DailyRecordModel, Dail
         }.handle();
     }
 
+    @PutMapping("/{recordId}/rest")
+    public ResponseData rest(@PathVariable Long recordId, @RequestParam Boolean rest) {
+        return new ControllerHandler() {
+            @Override
+            public void doHandler(ResponseData responseData) {
+                service.updateDailyRecordRest(recordId, rest);
+            }
+        }.handle();
+    }
+
 }

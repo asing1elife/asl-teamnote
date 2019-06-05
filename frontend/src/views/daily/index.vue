@@ -34,8 +34,9 @@
              @click="getTasksOfDay($event.target, day)">
           {{day.day}}
           <div class="day-tip">
-            <i-tag color="green" v-show="day.extra">E</i-tag>
-            <i-tag color="purple" v-show="day.repay">R</i-tag>
+            <i-tag color="green" v-show="day.extra">加</i-tag>
+            <i-tag color="purple" v-show="day.repay">还</i-tag>
+            <i-tag color="orange" v-show="day.rest">休</i-tag>
           </div>
         </div>
       </div>
@@ -48,28 +49,35 @@
                     :loading="loading"
                     @on-change="changeExtra">
             <span slot="open">加班</span>
-            <span slot="close">不加</span>
+            <span slot="close">加班</span>
           </i-switch>
           <i-switch size="large" v-model="dailyRecord.repay"
                     :loading="loading"
                     @on-change="changeRepay">
             <span slot="open">还班</span>
-            <span slot="close">不还</span>
+            <span slot="close">还班</span>
+          </i-switch>
+          <i-switch size="large" v-model="dailyRecord.rest"
+                    :loading="loading"
+                    @on-change="changeRest">
+            <span slot="open">休息</span>
+            <span slot="close">休息</span>
           </i-switch>
         </div>
       </div>
       <div class="section-content">
-        <i-tooltip placement="right" max-width="140"
-                   v-for="(task, index) in dailyRecord.tasks"
-                   :key="task.id" :content="getTaskDateInterval(task)">
-          <p class="task-item">
+        <p class="task-item"
+           v-for="(task, index) in dailyRecord.tasks"
+           :key="task.id">
+          <i-tooltip placement="right" max-width="140"
+                     :content="getTaskDateInterval(task)">
             <i-tag type="border" color="primary">{{index + 1}}.</i-tag>
             <i-tag :color="task.taskTag.color">{{task.taskTag.name}}</i-tag>
             <i-tag :color="getTaskStatusColor(task.status.code)">{{task.status.name}}</i-tag>
             <i-tag color="cyan">{{task.project.name}}</i-tag>
             <i-tag type="border" color="purple">{{task.name}}</i-tag>
-          </p>
-        </i-tooltip>
+          </i-tooltip>
+        </p>
       </div>
     </div>
   </div>
@@ -85,6 +93,9 @@
     data () {
       return {
         loading: false,
+        currentYear: null,
+        currentMonthId: null,
+        currentDay: null,
         dailies: [],
         years: [],
         months: [],
@@ -111,12 +122,14 @@
         })
       },
       // 获取指定月份所有日期
-      _getDailyRecords (dailyId) {
+      _getDailyRecords (dailyId, refreshDay = true) {
         this.$api.dailyRecord.records(dailyId).then((res) => {
           this.days = res.data
 
-          // 设置当前日期
-          this._setCurrentDay()
+          if (refreshDay) {
+            // 设置当前日期
+            this._setCurrentDay()
+          }
         })
       },
       // 获取正确的日期
@@ -147,10 +160,10 @@
           }
 
           let currentItem = this.$refs.month[this.$refs.month.length - 1]
-          let currentMonth = this.months[this.months.length - 1].id
+          let currentMonthId = this.months[this.months.length - 1].id
 
           // 默认激活最近一个月份
-          this.getDaysOfMonth(currentItem, currentMonth)
+          this.getDaysOfMonth(currentItem, currentMonthId)
         })
       },
       // 设置当前日期
@@ -167,10 +180,24 @@
           this.getTasksOfDay(currentItem, currentDay)
         })
       },
+      // 更新日志记录休息状态
+      _updateDailyRecordRestStatus (val) {
+        this.$api.dailyRecord.rest(this.dailyRecord.id, val).then((res) => {
+          this.loading = !res.success
+
+          this.currentDay.rest = val
+
+          // 刷新列表
+          this._getDailyRecords(this.currentMonthId, false)
+        })
+      },
       // 获取指定年份的月份列表
       getMonthsOfYear (item, year) {
         // 激活当前项
         activeCurrentItem(this.$refs.year, item)
+
+        // 将被点击的年份设为当前年份
+        this.currentYear = year
 
         // 获取当前年份的所有月份
         this.months = this.dailies[year]
@@ -179,16 +206,23 @@
         this._setCurrentMonth()
       },
       // 获取指定月份的日期列表
-      getDaysOfMonth (item, month) {
+      getDaysOfMonth (item, monthId) {
         // 激活当前项
         activeCurrentItem(this.$refs.month, item)
 
-        this._getDailyRecords(month)
+        // 将被点击的月份设为当前月份
+        this.currentMonthId = monthId
+
+        // 获取月份对应日志列表
+        this._getDailyRecords(monthId)
       },
       // 获取指定日期的所有任务列表
       getTasksOfDay (item, day) {
         // 激活当前项
         activeCurrentItem(this.$refs.day, item)
+
+        // 将被点击的日期设为当前日期
+        this.currentDay = day
 
         this.dailyRecord = new DailyRecord(day)
       },
@@ -206,8 +240,7 @@
         this.$api.dailyRecord.extra(this.dailyRecord.id, val).then((res) => {
           this.loading = !res.success
 
-          let currentDay = this._getCurrentDay(this.dailyRecord.id)
-          currentDay.extra = val
+          this.currentDay.extra = val
         })
       },
       // 更新还班状态
@@ -216,9 +249,29 @@
         this.$api.dailyRecord.repay(this.dailyRecord.id, val).then((res) => {
           this.loading = !res.success
 
-          let currentDay = this._getCurrentDay(this.dailyRecord.id)
-          currentDay.repay = val
+          this.currentDay.repay = val
         })
+      },
+      // 更新休息状态
+      changeRest (val) {
+        this.loading = true
+
+        if (val) {
+          this.$Modal.confirm({
+            title: '操作确认',
+            content: '将日期标记为休息状态后，会清空这一天的任务记录，确定今天在休息吗？',
+            onOk: () => {
+              // 更新日志休息状态
+              this._updateDailyRecordRestStatus(val)
+            },
+            onCancel: () => {
+              this.loading = false
+              this.currentDay.rest = false
+            }
+          })
+        } else {
+          this._updateDailyRecordRestStatus(val)
+        }
       }
     }
   }

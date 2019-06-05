@@ -27,6 +27,10 @@ public class DailyRecordModel extends BaseModel {
     @Column
     private boolean isRepay = false;
 
+    // 是否休息
+    @Column
+    private boolean isRest = false;
+
     @ManyToMany
     @JoinTable(name = "al_daily_record_task", joinColumns = @JoinColumn(name = "dailyRecord_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))

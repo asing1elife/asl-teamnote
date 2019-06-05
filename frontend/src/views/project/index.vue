@@ -18,7 +18,7 @@
           </i-dropdown-item>
         </i-dropdown-menu>
       </i-dropdown>
-      <p slot="title">{{project.name}} · <span class="text-mute">{{project.tasks.length}}</span></p>
+      <p slot="title">{{project.name}} · <span class="text-mute">{{getProjectTaskLength(project)}}</span></p>
       <div class="project-task-list">
         <div class="task-item"
              v-for="task in project.tasks"
@@ -280,7 +280,7 @@
           return project.id === projectId
         })
       },
-      // 跟新项目任务列表
+      // 更新项目任务列表
       _updateProjectTasks (taskProjectId) {
         // 获取当前任务所属项目
         let project = this.projects.find((project) => {
@@ -355,6 +355,10 @@
       getTaskStatusColor (code) {
         return TaskStatus.getDictionaryColor(code)
       },
+      // 获取项目任务数量
+      getProjectTaskLength (project) {
+        return project ? project.tasks ? project.tasks.length : 0 : 0
+      },
       // 检查任务完成状态
       checkTaskFinishStatus (task) {
         return task.status.code === TaskStatus.finish.code
@@ -362,6 +366,8 @@
       // 修改状态
       updateTaskStatus (name, task) {
         this.$api.task.status(task.id, this.$parent.organizationId, name).then(() => {
+          this.$Message.success('状态更新成功')
+
           this._updateProjectTasks(task.project.id)
         })
       },

@@ -48,6 +48,20 @@ export function repay (recordId, repay) {
   })
 }
 
+/**
+ * 更新休息标识
+ */
+export function rest (recordId, rest) {
+  const url = `${baseUrl}/${recordId}/rest`
+
+  return fetch.put({
+    url: url,
+    params: {
+      rest
+    }
+  })
+}
+
 export function del (id) {
   return fetch.del({
     url: `${baseUrl}/${id}`

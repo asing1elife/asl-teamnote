@@ -24,7 +24,7 @@
     <file>/opt/asl-logs/asl-teamnote.log</file>
 
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>/opt/asl-logs/asl-teamnote-%d{yyyy-MM-dd}-%i.zip</fileNamePattern>
+      <fileNamePattern>/opt/asl-logs/asl-teamnote-%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
       <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
         <maxFileSize>10MB</maxFileSize>
       </timeBasedFileNamingAndTriggeringPolicy>
@@ -47,7 +47,7 @@
     <file>/opt/asl-logs/asl-teamnote-error.log</file>
 
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>/opt/asl-logs/asl-teamnote-error-%d{yyyy-MM-dd}-%i.zip</fileNamePattern>
+      <fileNamePattern>/opt/asl-logs/asl-teamnote-error-%d{yyyy-MM-dd}.%i.zip</fileNamePattern>
       <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
         <maxFileSize>10MB</maxFileSize>
       </timeBasedFileNamingAndTriggeringPolicy>
@@ -67,5 +67,6 @@
   <root level="INFO">
     <appender-ref ref="console"/>
     <appender-ref ref="defaultLogFile"/>
+    <appender-ref ref="simpleExceptionLogFile"/>
   </root>
 </configuration>
