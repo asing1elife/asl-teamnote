@@ -79,10 +79,6 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
         DailyRecordModel dailyRecord = super.getOne(recordId);
         dailyRecord.setRest(isRest);
 
-        if (isRest) {
-            dailyRecord.setTasks(null);
-        }
-
         super.save(dailyRecord);
     }
 
