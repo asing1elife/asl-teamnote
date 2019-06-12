@@ -14,7 +14,7 @@ public class BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id = 0L;
+    private Long id;
 
     @Column
     private Date createTime = DateUtil.getSysDate();
