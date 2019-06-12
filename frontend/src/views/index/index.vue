@@ -45,4 +45,5 @@
         cursor pointer
     .ivu-layout-content
       display flex
+      overflow-y hidden
 </style>

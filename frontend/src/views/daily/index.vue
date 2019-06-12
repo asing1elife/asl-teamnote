@@ -285,10 +285,12 @@
     background-color $white-color
     border-radius $radius-size
     flex-grow 1
+    overflow-y hidden
     .year-section
     .month-section
     .day-section
-      flex 0 0 150px
+      min-width 150px
+      overflow hidden
     .day-section
       .section-item
         display flex
@@ -306,4 +308,6 @@
         .task-item
           margin-bottom 10px
           font-size $normal-size
+    .section-content
+      overflow-x auto
 </style>
