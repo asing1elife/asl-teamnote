@@ -39,7 +39,8 @@ module.exports = {
       'assets': resolve('src/assets'),
       'views': resolve('src/views'),
       'components': resolve('src/components'),
-      'model': resolve('src/model')
+      'model': resolve('src/model'),
+      'store': resolve('src/store')
     }
   },
   module: {

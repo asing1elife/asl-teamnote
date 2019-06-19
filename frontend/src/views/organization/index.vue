@@ -6,7 +6,7 @@
         <i-card class="organization-item"
                 v-for="organization in organizations"
                 :key="organization.id"
-                @click.native="toHome(organization.id)">
+                @click.native="toHome(organization)">
           <div slot="extra" class="organization-operate">
             <as-icon stop name="trash" size="small" color="error" class="del-btn"
                      @click="delOrganization(organization.id)"></as-icon>
@@ -46,6 +46,8 @@
   import asModal from 'components/as-modal'
   import asForm from 'components/as-form'
   import Organization from 'model/organization'
+  import { mapMutations } from 'vuex'
+  import { SET_CURRENT_ORGANIZATION } from 'store/mutation-types'
 
   export default {
     name: 'organization',
@@ -76,6 +78,9 @@
       this._getOrganizations()
     },
     methods: {
+      ...mapMutations({
+        SET_CURRENT_ORGANIZATION
+      }),
       _getOrganizations () {
         this.$api.organization.organizations().then((res) => {
           this.organizations = res.data
@@ -115,7 +120,12 @@
           }
         })
       },
-      toHome (organizationId) {
+      toHome (organization) {
+        let organizationId = organization.id
+        let organizationName = organization.name
+
+        this.SET_CURRENT_ORGANIZATION(organizationName)
+
         this.$router.push(`organizations/${organizationId}`)
       }
     },
