@@ -180,17 +180,6 @@
           this.getTasksOfDay(currentItem, currentDay)
         })
       },
-      // 更新日志记录休息状态
-      _updateDailyRecordRestStatus (val) {
-        this.$api.dailyRecord.rest(this.dailyRecord.id, val).then((res) => {
-          this.loading = !res.success
-
-          this.currentDay.rest = val
-
-          // 刷新列表
-          this._getDailyRecords(this.currentMonthId, false)
-        })
-      },
       // 获取指定年份的月份列表
       getMonthsOfYear (item, year) {
         // 激活当前项
@@ -256,22 +245,11 @@
       changeRest (val) {
         this.loading = true
 
-        if (val) {
-          this.$Modal.confirm({
-            title: '操作确认',
-            content: '将日期标记为休息状态后，会清空这一天的任务记录，确定今天在休息吗？',
-            onOk: () => {
-              // 更新日志休息状态
-              this._updateDailyRecordRestStatus(val)
-            },
-            onCancel: () => {
-              this.loading = false
-              this.currentDay.rest = false
-            }
-          })
-        } else {
-          this._updateDailyRecordRestStatus(val)
-        }
+        this.$api.dailyRecord.rest(this.dailyRecord.id, val).then((res) => {
+          this.loading = !res.success
+
+          this.currentDay.rest = val
+        })
       }
     }
   }
