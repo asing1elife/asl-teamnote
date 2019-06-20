@@ -75,7 +75,9 @@
             <i-tag :color="task.taskTag.color">{{task.taskTag.name}}</i-tag>
             <i-tag :color="getTaskStatusColor(task.status.code)">{{task.status.name}}</i-tag>
             <i-tag color="cyan">{{task.project.name}}</i-tag>
-            <i-tag type="border" color="purple">{{task.name}}</i-tag>
+            <i-tag type="border" color="purple"
+                   @click.native="copyTaskName(task.name)">{{task.name}}
+            </i-tag>
           </i-tooltip>
         </p>
       </div>
@@ -249,6 +251,14 @@
           this.loading = !res.success
 
           this.currentDay.rest = val
+        })
+      },
+      // 复制任务名称
+      copyTaskName (taskName) {
+        this.$copyText(taskName).then(() => {
+          this.$Message.success('任务名称已复制')
+        }, () => {
+          this.$Message.error('任务名称复试失败')
         })
       }
     }
