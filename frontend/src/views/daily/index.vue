@@ -32,7 +32,7 @@
         <div ref="day" class="section-item" v-for="day in days"
              :key="day.id"
              @click="getTasksOfDay($event.target, day)">
-          {{day.day}}
+          {{generateDayWeek(day)}}
           <div class="day-tip">
             <i-tag color="green" v-show="day.extra">加</i-tag>
             <i-tag color="purple" v-show="day.repay">还</i-tag>
@@ -260,6 +260,18 @@
         }, () => {
           this.$Message.error('任务名称复试失败')
         })
+      },
+      // 生成日期+星期的内容
+      generateDayWeek (day) {
+        let year = day.year
+        let month = day.daily.month
+        let date = day.day
+
+        let currentDate = new Date(`${year}-${month}-${date}`)
+
+        let week = ['Mon.', 'Tues.', 'Wed.', 'Thur.', 'Fri.', 'Sat.', 'Sun.']
+
+        return `${week[currentDate.getDay()]}${date}`
       }
     }
   }
@@ -276,10 +288,11 @@
     overflow-y hidden
     .year-section
     .month-section
-    .day-section
       min-width 150px
       overflow hidden
     .day-section
+      min-width 200px
+      overflow hidden
       .section-item
         display flex
         justify-content space-between
