@@ -76,16 +76,37 @@
             <i-tag :color="getTaskStatusColor(task.status.code)">{{task.status.name}}</i-tag>
             <i-tag color="cyan">{{task.project.name}}</i-tag>
             <i-tag type="border" color="purple"
-                   @click.native="copyTaskName(task.name)">{{task.name}}
+                   @click.native="copyToClipboard(task.name)">{{task.name}}
             </i-tag>
           </i-tooltip>
         </p>
       </div>
+      <div class="section-footer">
+        <i-button type="primary"
+                  @click="generateDailyReport">生成日报
+        </i-button>
+      </div>
     </div>
+    <as-modal footer-hide v-model="showDailyReport" class-name="daily-report-modal">
+      <div slot="header" class="ivu-modal-header-inner">日报
+        <small>点击面板可以直接复制内容</small>
+      </div>
+      <i-card :bordered="false"
+              @click.native="copyToClipboard(todayFinishTaskContent)">
+        <p slot="title">今日完成工作</p>
+        <div v-html="todayFinishTaskContent"></div>
+      </i-card>
+      <i-card :bordered="false"
+              @click.native="copyToClipboard(todayImplTaskContent)">
+        <p slot="title">未完成工作</p>
+        <div v-html="todayImplTaskContent"></div>
+      </i-card>
+    </as-modal>
   </div>
 </template>
 
 <script>
+  import asModal from 'components/as-modal'
   import { activeCurrentItem } from 'assets/scripts/dom'
   import { TaskStatus } from 'model/dictionary'
   import DailyRecord from 'model/dailyRecord'
@@ -95,9 +116,12 @@
     data () {
       return {
         loading: false,
+        showDailyReport: false,
         currentYear: null,
         currentMonthId: null,
         currentDay: null,
+        todayFinishTaskContent: '',
+        todayImplTaskContent: '',
         dailies: [],
         years: [],
         months: [],
@@ -253,12 +277,15 @@
           this.currentDay.rest = val
         })
       },
-      // 复制任务名称
-      copyTaskName (taskName) {
-        this.$copyText(taskName).then(() => {
-          this.$Message.success('任务名称已复制')
+      // 复制到剪贴板
+      copyToClipboard (content) {
+        // 转换内容
+        content = content.replace(/<br>/g, '\n')
+
+        this.$copyText(content).then(() => {
+          this.$Message.success('已复制')
         }, () => {
-          this.$Message.error('任务名称复试失败')
+          this.$Message.error('复制失败')
         })
       },
       // 生成日期+星期的内容
@@ -279,7 +306,51 @@
 
         // 获取正确的星期数之后拼接上日期
         return `${week[currentDate.getDay()]}${date}`
+      },
+      // 生成日报
+      generateDailyReport () {
+        this.showDailyReport = true
+
+        // 重置
+        this.todayFinishTaskContent = ''
+        this.todayImplTaskContent = ''
+
+        // 获取当天的任务列表
+        let tasks = this.currentDay.tasks
+        // 已完成任务数量
+        let finishTaskNum = 0
+        // 进行中任务数量
+        let implTaskNum = 0
+
+        // 轮询任务列表
+        for (let key in tasks) {
+          // 获取当前任务
+          let task = tasks[key]
+
+          // 当前任务已完成
+          if (task.status.code === TaskStatus.finish.code) {
+            // 已完成数量累加
+            finishTaskNum++
+
+            let finishTaskContent = `${finishTaskNum}. ${task.name} <br>`
+
+            this.todayFinishTaskContent += finishTaskContent
+          }
+
+          // 当前任务进行中
+          if (task.status.code === TaskStatus.impl.code) {
+            // 进行中数量累加
+            implTaskNum++
+
+            let implTaskContent = `${implTaskNum}. ${task.name} <br>`
+
+            this.todayImplTaskContent += implTaskContent
+          }
+        }
       }
+    },
+    components: {
+      asModal
     }
   }
 </script>
@@ -318,4 +389,13 @@
           font-size $normal-size
     .section-content
       overflow-x auto
+
+  .daily-report-modal
+    .ivu-modal-header
+      small
+        padding-left 5px
+        color $sub-color
+    .ivu-card
+      margin-bottom 15px
+      cursor pointer
 </style>

@@ -1,7 +1,8 @@
 <template>
   <i-modal id="asModal" v-model="visible"
-           :title="title" :width="width"
+           :title="title" :width="width" :footer-hide="footerHide" :class-name="className"
            @keyup.enter.native="okEvent">
+    <slot slot="header" name="header"></slot>
     <slot></slot>
     <!-- 原生的ok函数不论回调如何，都会直接关闭页面，所以这里对默认按钮事件进行了重写 -->
     <slot slot="footer" name="footer">
@@ -19,7 +20,14 @@
         type: Boolean,
         default: false
       },
+      footerHide: {
+        type: Boolean,
+        default: false
+      },
       title: {
+        type: String
+      },
+      className: {
         type: String
       },
       width: {
