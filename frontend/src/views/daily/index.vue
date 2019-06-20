@@ -263,14 +263,21 @@
       },
       // 生成日期+星期的内容
       generateDayWeek (day) {
-        let year = day.year
-        let month = day.daily.month
-        let date = day.day
+        let year = day.daily.year
+        let month = `${day.daily.month}`
+        let date = `${day.day}`
 
+        // 月份和日期如果只有一位数字，需要补0，因为safari无法识别单数字日期
+        month = month.length === 1 ? `0${month}` : month
+        date = date.length === 1 ? `0${date}` : date
+
+        // 将获取的具体日期转换为日期格式
         let currentDate = new Date(`${year}-${month}-${date}`)
 
+        // 待匹配的星期数组
         let week = ['Mon.', 'Tues.', 'Wed.', 'Thur.', 'Fri.', 'Sat.', 'Sun.']
 
+        // 获取正确的星期数之后拼接上日期
         return `${week[currentDate.getDay()]}${date}`
       }
     }
