@@ -275,7 +275,7 @@
         let currentDate = new Date(`${year}-${month}-${date}`)
 
         // 待匹配的星期数组
-        let week = ['Mon.', 'Tues.', 'Wed.', 'Thur.', 'Fri.', 'Sat.', 'Sun.']
+        let week = ['Sun.', 'Mon.', 'Tues.', 'Wed.', 'Thur.', 'Fri.', 'Sat.']
 
         // 获取正确的星期数之后拼接上日期
         return `${week[currentDate.getDay()]}${date}`
