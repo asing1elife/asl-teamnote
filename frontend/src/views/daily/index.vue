@@ -41,6 +41,7 @@
     <div class="day-section section">
       <div class="section-title">
         <h4>日期</h4>
+        <i-tag color="red">{{days.length}}</i-tag>
       </div>
       <div class="section-content">
         <div ref="day" class="section-item" v-for="day in days"
@@ -53,6 +54,10 @@
             <i-tag color="orange" v-show="day.rest">休</i-tag>
           </div>
         </div>
+      </div>
+      <div class="section-footer d-flex justify-content-end">
+        <i-tag color="green">{{calcExtraNum(days)}}</i-tag>
+        <i-tag color="purple">{{calcRepayNum(days)}}</i-tag>
       </div>
     </div>
     <div class="record-section section">
@@ -116,16 +121,16 @@
         <div v-html="todayImplTaskContent"></div>
       </i-card>
     </as-modal>
-    <as-modal title="报销详情" width="700" v-model="showReimburse">
-      <i-table v-if="reimburse"
-               :columns="reimburseTableColumns" :data="reimburse.items"></i-table>
-      <as-empty-tip text="本月还没有生成过报销单" v-else></as-empty-tip>
-      <div slot="footer">
-        <i-button type="primary" v-if="!reimburse"
-                  @click="generateReimburse">生成报销内容
-        </i-button>
-      </div>
-    </as-modal>
+    <!--<as-modal title="报销详情" width="700" v-model="showReimburse">-->
+      <!--<i-table v-if="reimburse"-->
+               <!--:columns="reimburseTableColumns" :data="reimburse.items"></i-table>-->
+      <!--<as-empty-tip text="本月还没有生成过报销单" v-else></as-empty-tip>-->
+      <!--<div slot="footer">-->
+        <!--<i-button type="primary" v-if="!reimburse"-->
+                  <!--@click="generateReimburse">生成报销内容-->
+        <!--</i-button>-->
+      <!--</div>-->
+    <!--</as-modal>-->
   </div>
 </template>
 
@@ -136,7 +141,8 @@
   import { activeCurrentItem, isTargetTag } from 'assets/scripts/dom'
   import { TaskStatus } from 'model/dictionary'
   import DailyRecord from 'model/dailyRecord'
-  import Reimburse from 'model/reimburse'
+  // import Reimburse from 'model/reimburse'
+  import _ from 'lodash'
 
   export default {
     name: 'daily',
@@ -144,39 +150,39 @@
       return {
         loading: false,
         showDailyReport: false,
-        showReimburse: false,
+        // showReimburse: false,
         currentYear: null,
         currentMonthId: null,
         currentDay: null,
-        currentReimburseDailyId: null,
+        // currentReimburseDailyId: null,
         todayFinishTaskContent: '',
         todayImplTaskContent: '',
         dailyRecord: new DailyRecord(-1),
-        reimburse: null,
+        // reimburse: null,
         dailies: [],
         years: [],
         months: [],
-        days: [],
-        reimburseTableColumns: [
-          {
-            title: '日期',
-            key: 'reimburseDate'
-          },
-          {
-            title: '类型',
-            key: 'typeName'
-          },
-          {
-            title: '金额',
-            key: 'amount'
-          },
-          {
-            title: '操作',
-            slot: 'operate',
-            width: 150,
-            align: 'center'
-          }
-        ]
+        days: []
+        // reimburseTableColumns: [
+        //   {
+        //     title: '日期',
+        //     key: 'reimburseDate'
+        //   },
+        //   {
+        //     title: '类型',
+        //     key: 'typeName'
+        //   },
+        //   {
+        //     title: '金额',
+        //     key: 'amount'
+        //   },
+        //   {
+        //     title: '操作',
+        //     slot: 'operate',
+        //     width: 150,
+        //     align: 'center'
+        //   }
+        // ]
       }
     },
     created () {
@@ -403,29 +409,53 @@
           }
         }
       },
-      // 打开报销窗口
-      openReimburseModal (dailyId) {
-        this.showReimburse = true
-        this.currentReimburseDailyId = dailyId
+      // 计算加班数量
+      calcExtraNum (days) {
+        let extraNum = 0
 
-        this.$api.reimburse.check(this.currentReimburseDailyId).then((res) => {
-          this.reimburse = res.data ? new Reimburse(res.data) : null
-
-          console.log(this.reimburse)
-        })
-      },
-      // 生成报销内容
-      generateReimburse () {
-        this.$Modal.confirm({
-          title: '操作确认',
-          content: '如果本月存在加班记录，会被自动加入报销项目中，确定为本月生成报销记录？',
-          onOk: () => {
-            this.$api.reimburse.generate(this.currentReimburseDailyId).then(() => {
-              this.$Message.success('报销单已生成')
-            })
+        _.forEach(days, (value) => {
+          if (value.extra) {
+            extraNum++
           }
         })
+
+        return extraNum
+      },
+      // 计算还班数量
+      calcRepayNum (days) {
+        let repayNum = 0
+
+        _.forEach(days, (value) => {
+          if (value.repay) {
+            repayNum++
+          }
+        })
+
+        return repayNum
       }
+      // 打开报销窗口
+      // openReimburseModal (dailyId) {
+      //   this.showReimburse = true
+      //   this.currentReimburseDailyId = dailyId
+      //
+      //   this.$api.reimburse.check(this.currentReimburseDailyId).then((res) => {
+      //     this.reimburse = res.data ? new Reimburse(res.data) : null
+      //
+      //     console.log(this.reimburse)
+      //   })
+      // },
+      // // 生成报销内容
+      // generateReimburse () {
+      //   this.$Modal.confirm({
+      //     title: '操作确认',
+      //     content: '如果本月存在加班记录，会被自动加入报销项目中，确定为本月生成报销记录？',
+      //     onOk: () => {
+      //       this.$api.reimburse.generate(this.currentReimburseDailyId).then(() => {
+      //         this.$Message.success('报销单已生成')
+      //       })
+      //     }
+      //   })
+      // }
     },
     components: {
       asModal,
@@ -451,6 +481,9 @@
     .day-section
       min-width 200px
       overflow hidden
+      .section-title
+        display flex
+        justify-content space-between
       .section-item
         display flex
         justify-content space-between
