@@ -130,6 +130,10 @@
           </i-radio-group>
         </i-form-item>
       </as-form>
+      <i-button slot="button" type="info"
+                @click="saveTaskAndContinue">
+        保存&继续
+      </i-button>
     </as-modal>
   </div>
 </template>
@@ -346,6 +350,21 @@
             // 更新项目任务列表
             this._updateProjectTasks(task.project.id)
           }
+        })
+      },
+      // 保存并继续
+      saveTaskAndContinue () {
+        this.taskSubmit().then((res) => {
+          if (!res) {
+            return
+          }
+
+          // 记录当前任务所属的项目id
+          let project = this.task.project
+
+          // 重置任务对象
+          this.task = new Task(-1)
+          this.task.project = project
         })
       },
       // 获取任务级别颜色

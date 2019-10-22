@@ -8,6 +8,7 @@
     <slot slot="footer" name="footer">
       <i-button type="text" @click="cancelEvent">{{cancelText}}</i-button>
       <i-button type="primary" @click="okEvent">{{okText}}</i-button>
+      <slot name="button"></slot>
     </slot>
   </i-modal>
 </template>
@@ -24,6 +25,7 @@
         type: Boolean,
         default: false
       },
+      // 支持回车提交的开关
       enter: {
         type: Boolean,
         default: true
