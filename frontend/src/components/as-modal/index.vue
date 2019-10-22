@@ -1,7 +1,7 @@
 <template>
   <i-modal id="asModal" v-model="visible"
            :title="title" :width="width" :footer-hide="footerHide" :class-name="className"
-           @keyup.enter.native="okEvent">
+           @keyup.enter.native="enterTriggerOkEvent">
     <slot slot="header" name="header"></slot>
     <slot></slot>
     <!-- 原生的ok函数不论回调如何，都会直接关闭页面，所以这里对默认按钮事件进行了重写 -->
@@ -23,6 +23,10 @@
       footerHide: {
         type: Boolean,
         default: false
+      },
+      enter: {
+        type: Boolean,
+        default: true
       },
       title: {
         type: String
@@ -68,6 +72,13 @@
     methods: {
       _close () {
         this.visible = false
+      },
+      enterTriggerOkEvent () {
+        if (!this.enter) {
+          return
+        }
+
+        this.okEvent()
       },
       okEvent () {
         // 根据回调结果判断是否关闭窗口

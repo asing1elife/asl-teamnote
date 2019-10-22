@@ -69,6 +69,7 @@
     </as-modal>
     <as-modal class="task-tag-modal"
               v-model="showTask"
+              :enter="false"
               :title="taskTitle" :ok="taskSubmit">
       <as-form ref="taskForm"
                :model="task" :rules="taskRules">
