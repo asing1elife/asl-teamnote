@@ -56,7 +56,7 @@
       <as-icon size="large" text="创建新项目"
                @click="openProjectModal(-1)"></as-icon>
     </i-card>
-    <as-modal v-model="showProject" title="项目设置"
+    <as-modal title="项目设置" v-model="showProject"
               :ok="projectSubmit">
       <as-form ref="projectForm"
                :model="project" :rules="projectRules">

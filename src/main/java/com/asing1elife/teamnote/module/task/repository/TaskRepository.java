@@ -11,16 +11,16 @@ public interface TaskRepository extends BaseRepository<TaskModel, Long> {
     /**
      * 获取指定项目未完成任务
      */
-    List<TaskModel> findByStatusNotAndProject_IdOrderByLevelDescStatusAsc(TaskStatus status, Long projectId);
+    List<TaskModel> findByStatusNotAndProject_IdOrderByLevelDescStatusAsc(TaskStatus status, long projectId);
 
     /**
      * 获取指定项目已完成完成任务
      */
-    List<TaskModel> findByStatusAndProject_IdOrderByLevelDescStatusAsc(TaskStatus status, Long projectId);
+    List<TaskModel> findByStatusAndProject_IdOrderByLevelDescStatusAsc(TaskStatus status, long projectId);
 
     /**
      * 获取指定状态任务列表
      */
-    List<TaskModel> findByProject_Organization_idAndStatus(long organization, TaskStatus status);
+    List<TaskModel> findByProject_Organization_idAndStatus(long organizationId, TaskStatus status);
 
 }

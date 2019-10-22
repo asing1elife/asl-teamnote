@@ -21,15 +21,15 @@ public class DailyRecordModel extends BaseModel {
 
     // 是否加班
     @Column
-    private boolean isExtra = false;
+    private Boolean extra = false;
 
     // 是否还班
     @Column
-    private boolean isRepay = false;
+    private Boolean repay = false;
 
     // 是否休息
     @Column
-    private boolean isRest = false;
+    private Boolean rest = false;
 
     @ManyToMany
     @JoinTable(name = "al_daily_record_task", joinColumns = @JoinColumn(name = "dailyRecord_id", referencedColumnName = "id"),

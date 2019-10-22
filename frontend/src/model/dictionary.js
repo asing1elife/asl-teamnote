@@ -53,7 +53,25 @@ class TaskStatus extends Dictionary {
   static finish = new TaskStatus('TAST_Finish', '已完成', 'success')
 }
 
+/**
+ * 报销状态
+ */
+class ReimburseStatus extends Dictionary {
+  static impl = new ReimburseStatus('RBST_Impl', '报销中', 'warning')
+  static finish = new ReimburseStatus('RBST_Finish', '已结算', 'success')
+}
+
+/**
+ * 报销项目类型
+ */
+class ReimburseItemType extends Dictionary {
+  static extra = new ReimburseStatus('RITY_Extra', '加班')
+  static fare = new ReimburseStatus('RITY_Fare', '车费')
+}
+
 export {
   TaskLevel,
-  TaskStatus
+  TaskStatus,
+  ReimburseStatus,
+  ReimburseItemType
 }

@@ -25,7 +25,7 @@ public class DailyModel extends BaseModel {
 
     // 是否报销
     @Column
-    private Boolean isExpense = false;
+    private Boolean expense = false;
 
     // 报销金额
     @Column
@@ -35,4 +35,9 @@ public class DailyModel extends BaseModel {
     @Column
     private Integer totalDay = 0;
 
+    public DailyModel() { }
+
+    public DailyModel(long id) {
+        super.setId(id);
+    }
 }

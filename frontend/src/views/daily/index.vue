@@ -21,6 +21,20 @@
              :key="month.id"
              @click="getDaysOfMonth($event.target, month.id)">
           {{month.month}}
+          <!--<i-dropdown>-->
+            <!--<a href="javascript:">-->
+              <!--<as-icon name="more-horizontal-f"></as-icon>-->
+            <!--</a>-->
+            <!--<i-dropdown-menu slot="list">-->
+              <!--<i-dropdown-item name="reimburse">-->
+                <!--<as-icon name="coin-f" text="报销" direction="right"-->
+                         <!--@click="openReimburseModal(month.id)"></as-icon>-->
+              <!--</i-dropdown-item>-->
+              <!--<i-dropdown-item name="report">-->
+                <!--<as-icon name="clipboard" text="月报" direction="right"></as-icon>-->
+              <!--</i-dropdown-item>-->
+            <!--</i-dropdown-menu>-->
+          <!--</i-dropdown>-->
         </div>
       </div>
     </div>
@@ -102,14 +116,27 @@
         <div v-html="todayImplTaskContent"></div>
       </i-card>
     </as-modal>
+    <as-modal title="报销详情" width="700" v-model="showReimburse">
+      <i-table v-if="reimburse"
+               :columns="reimburseTableColumns" :data="reimburse.items"></i-table>
+      <as-empty-tip text="本月还没有生成过报销单" v-else></as-empty-tip>
+      <div slot="footer">
+        <i-button type="primary" v-if="!reimburse"
+                  @click="generateReimburse">生成报销内容
+        </i-button>
+      </div>
+    </as-modal>
   </div>
 </template>
 
 <script>
   import asModal from 'components/as-modal'
-  import { activeCurrentItem } from 'assets/scripts/dom'
+  import asIcon from 'components/as-icon'
+  import asEmptyTip from 'components/as-empty-tip'
+  import { activeCurrentItem, isTargetTag } from 'assets/scripts/dom'
   import { TaskStatus } from 'model/dictionary'
   import DailyRecord from 'model/dailyRecord'
+  import Reimburse from 'model/reimburse'
 
   export default {
     name: 'daily',
@@ -117,16 +144,39 @@
       return {
         loading: false,
         showDailyReport: false,
+        showReimburse: false,
         currentYear: null,
         currentMonthId: null,
         currentDay: null,
+        currentReimburseDailyId: null,
         todayFinishTaskContent: '',
         todayImplTaskContent: '',
+        dailyRecord: new DailyRecord(-1),
+        reimburse: null,
         dailies: [],
         years: [],
         months: [],
         days: [],
-        dailyRecord: new DailyRecord(-1)
+        reimburseTableColumns: [
+          {
+            title: '日期',
+            key: 'reimburseDate'
+          },
+          {
+            title: '类型',
+            key: 'typeName'
+          },
+          {
+            title: '金额',
+            key: 'amount'
+          },
+          {
+            title: '操作',
+            slot: 'operate',
+            width: 150,
+            align: 'center'
+          }
+        ]
       }
     },
     created () {
@@ -222,6 +272,11 @@
       },
       // 获取指定月份的日期列表
       getDaysOfMonth (item, monthId) {
+        // 防止点击扩展菜单时触发事件
+        if (!isTargetTag(item, 'div')) {
+          return
+        }
+
         // 激活当前项
         activeCurrentItem(this.$refs.month, item)
 
@@ -347,10 +402,35 @@
             this.todayImplTaskContent += implTaskContent
           }
         }
+      },
+      // 打开报销窗口
+      openReimburseModal (dailyId) {
+        this.showReimburse = true
+        this.currentReimburseDailyId = dailyId
+
+        this.$api.reimburse.check(this.currentReimburseDailyId).then((res) => {
+          this.reimburse = res.data ? new Reimburse(res.data) : null
+
+          console.log(this.reimburse)
+        })
+      },
+      // 生成报销内容
+      generateReimburse () {
+        this.$Modal.confirm({
+          title: '操作确认',
+          content: '如果本月存在加班记录，会被自动加入报销项目中，确定为本月生成报销记录？',
+          onOk: () => {
+            this.$api.reimburse.generate(this.currentReimburseDailyId).then(() => {
+              this.$Message.success('报销单已生成')
+            })
+          }
+        })
       }
     },
     components: {
-      asModal
+      asModal,
+      asIcon,
+      asEmptyTip
     }
   }
 </script>
@@ -389,6 +469,18 @@
           font-size $normal-size
     .section-content
       overflow-x auto
+
+    .month-section
+      .section-content
+        .section-item
+          display flex
+          justify-content space-between
+          padding-right 10px
+          .ivu-dropdown
+            display none
+          &:hover
+            .ivu-dropdown
+              display block
 
   .daily-report-modal
     .ivu-modal-header

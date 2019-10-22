@@ -16,6 +16,7 @@ export default class Task extends Base {
     this.planFinishDate = null
     this.beginDate = null
     this.finishDate = null
+    this.records = []
   }
 
   _complex (data) {
@@ -30,6 +31,7 @@ export default class Task extends Base {
     this.planFinishDate = data.planFinishDate
     this.beginDate = data.beginDate
     this.finishDate = data.finishDate
+    this.records = data.records
   }
 
   get levelCode () {

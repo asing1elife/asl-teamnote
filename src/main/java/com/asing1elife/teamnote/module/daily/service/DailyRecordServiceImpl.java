@@ -26,6 +26,13 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
     }
 
     /**
+     * 获取指定月份加班的日志记录
+     */
+    public List<DailyRecordModel> getExtraDailyRecordsByDaily(long dailyId) {
+        return repository.findByDaily_IdAndExtraIsTrue(dailyId);
+    }
+
+    /**
      * 检查当天日志，不存在则创建
      */
     @Transactional
