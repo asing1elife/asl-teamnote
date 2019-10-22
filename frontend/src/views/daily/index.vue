@@ -41,7 +41,7 @@
     <div class="day-section section">
       <div class="section-title">
         <h4>日期</h4>
-        <i-tag color="red">{{days.length}}</i-tag>
+        <i-tag color="red">{{calcWorkNum(days)}}</i-tag>
       </div>
       <div class="section-content">
         <div ref="day" class="section-item" v-for="day in days"
@@ -408,6 +408,18 @@
             this.todayImplTaskContent += implTaskContent
           }
         }
+      },
+      // 计算上班数量
+      calcWorkNum (days) {
+        let workNum = days.length
+
+        _.forEach(days, (value) => {
+          if (value.rest) {
+            workNum--
+          }
+        })
+
+        return workNum
       },
       // 计算加班数量
       calcExtraNum (days) {
