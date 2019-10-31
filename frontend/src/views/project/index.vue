@@ -228,7 +228,9 @@
     },
     methods: {
       _getProjects () {
-        this.$api.project.projects(this.$parent.organizationId).then((res) => {
+        this.$api.project.list({
+          organizationId: this.$parent.organizationId
+        }).then((res) => {
           this.projects = res.data
 
           // 异步获取项目任务列表
@@ -238,20 +240,22 @@
         })
       },
       _getTaskTags () {
-        this.$api.taskTag.tags().then((res) => {
+        this.$api.taskTag.list().then((res) => {
           this.taskTags = res.data
         })
       },
       // 获取项目任务列表
       _getTasksByProject (project) {
-        this.$api.task.tasks(project.id).then((res) => {
+        this.$api.task.list({
+          projectId: project.id
+        }).then((res) => {
           project.tasks = res.data
           // 用于触发DOM渲染
           project.name += ' '
         })
       },
       _getProject (projectId) {
-        this.$api.project.project(projectId).then((res) => {
+        this.$api.project.get(projectId).then((res) => {
           this.project = new Project(res.data)
 
           if (projectId === -1) {
@@ -261,7 +265,7 @@
         })
       },
       _getTask (taskId, projectId) {
-        this.$api.task.task(taskId).then((res) => {
+        this.$api.task.get(taskId).then((res) => {
           this.task = new Task(res.data)
 
           if (taskId === -1) {
@@ -385,7 +389,10 @@
       },
       // 修改状态
       updateTaskStatus (name, task) {
-        this.$api.task.status(task.id, this.$parent.organizationId, name).then(() => {
+        this.$api.task.status(task.id, {
+          organizationId: this.$parent.organizationId,
+          statusCode: name
+        }).then(() => {
           this.$Message.success('状态更新成功')
 
           this._updateProjectTasks(task.project.id)

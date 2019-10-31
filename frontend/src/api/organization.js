@@ -1,22 +1,9 @@
-import * as fetch from 'assets/scripts/fetch'
+import BaseApi from './baseApi'
 
-export const baseUrl = '/api/organizations'
-
-export function organizations () {
-  return fetch.get({
-    url: baseUrl
-  })
+class OrganizationApi extends BaseApi {
+  constructor () {
+    super('/organizations')
+  }
 }
 
-export function organization (id) {
-  return fetch.getById({
-    url: baseUrl,
-    id
-  })
-}
-
-export function del (id) {
-  return fetch.del({
-    url: `${baseUrl}/${id}`
-  })
-}
+export default new OrganizationApi()

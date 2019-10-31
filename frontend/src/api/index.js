@@ -1,10 +1,10 @@
 import * as common from './common'
-import * as organization from './organization'
-import * as project from './project'
-import * as task from './task'
-import * as taskTag from './taskTag'
-import * as daily from './daily'
-import * as dailyRecord from './dailyRecord'
+import organization from './organization'
+import project from './project'
+import task from './task'
+import taskTag from './taskTag'
+import daily from './daily'
+import dailyRecord from './dailyRecord'
 import * as reimburse from './reimburse'
 
 const apiObj = {

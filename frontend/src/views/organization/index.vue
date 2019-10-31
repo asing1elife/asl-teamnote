@@ -82,12 +82,12 @@
         SET_CURRENT_ORGANIZATION
       }),
       _getOrganizations () {
-        this.$api.organization.organizations().then((res) => {
+        this.$api.organization.list().then((res) => {
           this.organizations = res.data
         })
       },
       _getOrganization (organizationId) {
-        this.$api.organization.organization(organizationId).then((res) => {
+        this.$api.organization.get(organizationId).then((res) => {
           this.organization = new Organization(res.data)
         })
       },

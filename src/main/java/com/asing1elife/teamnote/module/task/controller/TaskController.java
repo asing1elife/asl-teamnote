@@ -21,7 +21,7 @@ public class TaskController extends BaseController<TaskModel, TaskServiceImpl> {
         }.handle();
     }
 
-    @PutMapping("/{taskId}/status")
+    @PutMapping("{taskId}/status")
     public ResponseData status(@PathVariable long taskId, @RequestParam long organizationId, @RequestParam String statusCode) {
         return new ControllerHandler() {
             @Override

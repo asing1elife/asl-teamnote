@@ -1,7 +1,7 @@
 // 应用名称
 export const appName = 'teamnote'
 // 接入服务器接口地址根目录
-export const serverBaseUrl = '/teamnote'
+export const serverBaseUrl = '/teamnote/api'
 
 // 本地存储的前缀
 export const storagePrefix = 'asl_s_'

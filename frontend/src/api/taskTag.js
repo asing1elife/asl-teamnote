@@ -1,22 +1,9 @@
-import * as fetch from 'assets/scripts/fetch'
+import BaseApi from './baseApi'
 
-export const baseUrl = '/api/task/tags'
-
-export function tags () {
-  return fetch.get({
-    url: baseUrl
-  })
+class TaskTagApi extends BaseApi {
+  constructor () {
+    super('/task/tags')
+  }
 }
 
-export function tag (tagId) {
-  return fetch.getById({
-    url: baseUrl,
-    id: tagId
-  })
-}
-
-export function del (tagId) {
-  return fetch.del({
-    url: `${baseUrl}/${tagId}`
-  })
-}
+export default new TaskTagApi()

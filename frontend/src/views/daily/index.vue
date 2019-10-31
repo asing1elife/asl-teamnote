@@ -22,18 +22,18 @@
              @click="getDaysOfMonth($event.target, month.id)">
           {{month.month}}
           <!--<i-dropdown>-->
-            <!--<a href="javascript:">-->
-              <!--<as-icon name="more-horizontal-f"></as-icon>-->
-            <!--</a>-->
-            <!--<i-dropdown-menu slot="list">-->
-              <!--<i-dropdown-item name="reimburse">-->
-                <!--<as-icon name="coin-f" text="报销" direction="right"-->
-                         <!--@click="openReimburseModal(month.id)"></as-icon>-->
-              <!--</i-dropdown-item>-->
-              <!--<i-dropdown-item name="report">-->
-                <!--<as-icon name="clipboard" text="月报" direction="right"></as-icon>-->
-              <!--</i-dropdown-item>-->
-            <!--</i-dropdown-menu>-->
+          <!--<a href="javascript:">-->
+          <!--<as-icon name="more-horizontal-f"></as-icon>-->
+          <!--</a>-->
+          <!--<i-dropdown-menu slot="list">-->
+          <!--<i-dropdown-item name="reimburse">-->
+          <!--<as-icon name="coin-f" text="报销" direction="right"-->
+          <!--@click="openReimburseModal(month.id)"></as-icon>-->
+          <!--</i-dropdown-item>-->
+          <!--<i-dropdown-item name="report">-->
+          <!--<as-icon name="clipboard" text="月报" direction="right"></as-icon>-->
+          <!--</i-dropdown-item>-->
+          <!--</i-dropdown-menu>-->
           <!--</i-dropdown>-->
         </div>
       </div>
@@ -122,14 +122,14 @@
       </i-card>
     </as-modal>
     <!--<as-modal title="报销详情" width="700" v-model="showReimburse">-->
-      <!--<i-table v-if="reimburse"-->
-               <!--:columns="reimburseTableColumns" :data="reimburse.items"></i-table>-->
-      <!--<as-empty-tip text="本月还没有生成过报销单" v-else></as-empty-tip>-->
-      <!--<div slot="footer">-->
-        <!--<i-button type="primary" v-if="!reimburse"-->
-                  <!--@click="generateReimburse">生成报销内容-->
-        <!--</i-button>-->
-      <!--</div>-->
+    <!--<i-table v-if="reimburse"-->
+    <!--:columns="reimburseTableColumns" :data="reimburse.items"></i-table>-->
+    <!--<as-empty-tip text="本月还没有生成过报销单" v-else></as-empty-tip>-->
+    <!--<div slot="footer">-->
+    <!--<i-button type="primary" v-if="!reimburse"-->
+    <!--@click="generateReimburse">生成报销内容-->
+    <!--</i-button>-->
+    <!--</div>-->
     <!--</as-modal>-->
   </div>
 </template>
@@ -191,7 +191,9 @@
     methods: {
       // 获取当前组织所有日志
       _getDailies () {
-        this.$api.daily.dailies(this.$parent.organizationId).then((res) => {
+        this.$api.daily.list({
+          organizationId: this.$parent.organizationId
+        }).then((res) => {
           this.dailies = res.data
 
           // 从数据中获取年份
@@ -205,7 +207,9 @@
       },
       // 获取指定月份所有日期
       _getDailyRecords (dailyId, refreshDay = true) {
-        this.$api.dailyRecord.records(dailyId).then((res) => {
+        this.$api.dailyRecord.list({
+          dailyId
+        }).then((res) => {
           this.days = res.data
 
           if (refreshDay) {

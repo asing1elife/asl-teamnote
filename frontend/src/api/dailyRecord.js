@@ -1,69 +1,51 @@
-import * as fetch from 'assets/scripts/fetch'
+import BaseApi from './baseApi'
 
-export const baseUrl = '/api/daily/records'
+class DailyRecordApi extends BaseApi {
+  constructor () {
+    super('/daily/records')
+  }
 
-export function records (dailyId) {
-  const url = `${baseUrl}`
+  /**
+   * 更新加班标识
+   */
+  extra (recordId, extra) {
+    const url = `${this.baseUrl}/${recordId}/extra`
 
-  return fetch.post({
-    url,
-    params: {
-      dailyId
-    }
-  })
+    return this.fetch.put({
+      url,
+      params: {
+        extra
+      }
+    })
+  }
+
+  /**
+   * 更新还班标识
+   */
+  repay (recordId, repay) {
+    const url = `${this.baseUrl}/${recordId}/repay`
+
+    return this.fetch.put({
+      url,
+      params: {
+        repay
+      }
+    })
+  }
+
+  /**
+   * 更新休息标识
+   */
+  rest (recordId, rest) {
+    const url = `${this.baseUrl}/${recordId}/rest`
+
+    return this.fetch.put({
+      url: url,
+      params: {
+        rest
+      }
+    })
+  }
 }
 
-export function record (id) {
-  return fetch.getById({
-    url: baseUrl,
-    id
-  })
-}
-
-/**
- * 更新加班标识
- */
-export function extra (recordId, extra) {
-  const url = `${baseUrl}/${recordId}/extra`
-
-  return fetch.put({
-    url: url,
-    params: {
-      extra
-    }
-  })
-}
-
-/**
- * 更新还班标识
- */
-export function repay (recordId, repay) {
-  const url = `${baseUrl}/${recordId}/repay`
-
-  return fetch.put({
-    url: url,
-    params: {
-      repay
-    }
-  })
-}
-
-/**
- * 更新休息标识
- */
-export function rest (recordId, rest) {
-  const url = `${baseUrl}/${recordId}/rest`
-
-  return fetch.put({
-    url: url,
-    params: {
-      rest
-    }
-  })
-}
-
-export function del (id) {
-  return fetch.del({
-    url: `${baseUrl}/${id}`
-  })
-}
+export default new DailyRecordApi()

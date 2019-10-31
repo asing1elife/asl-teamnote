@@ -1,25 +1,9 @@
-import * as fetch from 'assets/scripts/fetch'
+import BaseApi from './baseApi'
 
-export const baseUrl = '/api/dailies'
-
-export function dailies (organizationId) {
-  return fetch.post({
-    url: baseUrl,
-    params: {
-      organizationId: organizationId
-    }
-  })
+class DailyApi extends BaseApi {
+  constructor () {
+    super('/dailies')
+  }
 }
 
-export function daily (id) {
-  return fetch.getById({
-    url: baseUrl,
-    id
-  })
-}
-
-export function del (id) {
-  return fetch.del({
-    url: `${baseUrl}/${id}`
-  })
-}
+export default new DailyApi()

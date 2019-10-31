@@ -1,40 +1,21 @@
-import * as fetch from 'assets/scripts/fetch'
+import BaseApi from './baseApi'
 
-export const baseUrl = '/api/tasks'
+class TaskApi extends BaseApi {
+  constructor () {
+    super('/tasks')
+  }
 
-/**
- * 获取指定项目所有任务
- */
-export function tasks (projectId) {
-  return fetch.post({
-    url: baseUrl,
-    params: {
-      projectId
-    }
-  })
+  /**
+   * 状态
+   */
+  status (id, params) {
+    const url = `${this.baseUrl}/${id}/status`
+
+    return this.fetch.put({
+      url,
+      params
+    })
+  }
 }
 
-export function task (taskId) {
-  return fetch.getById({
-    url: baseUrl,
-    id: taskId
-  })
-}
-
-export function del (taskId) {
-  return fetch.del({
-    url: `${baseUrl}/${taskId}`
-  })
-}
-
-export function status (taskId, organizationId, statusCode) {
-  let url = `${baseUrl}/${taskId}/status`
-
-  return fetch.put({
-    url,
-    params: {
-      organizationId,
-      statusCode
-    }
-  })
-}
+export default new TaskApi()
