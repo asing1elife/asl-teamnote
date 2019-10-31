@@ -7,6 +7,7 @@ class Dictionary {
   constructor (code, name) {
     this.code = code
     this.name = name
+    this.color = getColor(code)
   }
 }
 
