@@ -101,15 +101,9 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
         // 获取日志记录任务列表
         List<TaskModel> tasks = record.getTasks();
 
-        // 只要任务状态不是初始化，则需要与当天的日志进行关联
-        if (!task.getStatus().equals(TaskStatus.TAST_Init)) {
-            // 不存在则添加关联
-            if (getCurrentTask(tasks, task) == null) {
-                tasks.add(task);
-            }
-        } else {
-            // 移除任务关联
-            tasks.removeIf(tempTask -> tempTask.getId().equals(task.getId()));
+        // 不存在则添加关联
+        if (getCurrentTask(tasks, task) == null) {
+            tasks.add(task);
         }
 
         dailyRecordService.updateDailyRecordTask(record);

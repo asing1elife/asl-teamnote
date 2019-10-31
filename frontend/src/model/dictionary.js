@@ -4,10 +4,11 @@ import _ from 'lodash'
 let dics = {}
 
 class Dictionary {
-  constructor (code, name) {
-    this.code = code
-    this.name = name
-    this.color = getColor(code)
+  constructor (dic) {
+    this.code = dic.code
+    this.name = dic.name
+    this.index = dic.indexNo
+    this.color = getColor(dic.code)
   }
 }
 
@@ -28,16 +29,12 @@ function generateDictionaries () {
     let className = _.camelCase(dic.className)
     // 简短编码，用于类名下的属性名
     let simpleCode = dic.realCode
-    // 完整编码
-    let code = dic.code
-    // 名称
-    let name = dic.name
 
     // 判断该类名是否已经创建数据字典
     if (dics[className]) {
       // 已创建则添加属性名
       // 属性名接收的是实例化后的数据字典类
-      dics[className][simpleCode] = new Dictionary(code, name)
+      dics[className][simpleCode] = new Dictionary(dic)
     } else {
       // 没有创建则创建一个对应类名的数据字典
 
@@ -50,7 +47,8 @@ function generateDictionaries () {
             dictionaries.push(this[key])
           }
 
-          return dictionaries
+          // 排序
+          return _.orderBy(dictionaries, ['index'])
         }
 
         // 获取指定字典对象
@@ -62,7 +60,7 @@ function generateDictionaries () {
       }
 
       // 为该数据字典添加第一个属性
-      dics[className][simpleCode] = new Dictionary(code, name)
+      dics[className][simpleCode] = new Dictionary(dic)
     }
   })
 

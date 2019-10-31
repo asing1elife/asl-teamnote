@@ -38,7 +38,7 @@
                 </i-button>
                 <i-dropdown-menu slot="list">
                   <i-dropdown-item v-for="status in taskStatus"
-                                   :key="status.coode" :name="status.code">
+                                   :key="status.code" :name="status.code">
                     {{status.name}}
                   </i-dropdown-item>
                 </i-dropdown-menu>

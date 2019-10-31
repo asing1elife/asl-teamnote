@@ -21,20 +21,6 @@
              :key="month.id"
              @click="getDaysOfMonth($event.target, month.id)">
           {{month.month}}
-          <!--<i-dropdown>-->
-          <!--<a href="javascript:">-->
-          <!--<as-icon name="more-horizontal-f"></as-icon>-->
-          <!--</a>-->
-          <!--<i-dropdown-menu slot="list">-->
-          <!--<i-dropdown-item name="reimburse">-->
-          <!--<as-icon name="coin-f" text="报销" direction="right"-->
-          <!--@click="openReimburseModal(month.id)"></as-icon>-->
-          <!--</i-dropdown-item>-->
-          <!--<i-dropdown-item name="report">-->
-          <!--<as-icon name="clipboard" text="月报" direction="right"></as-icon>-->
-          <!--</i-dropdown-item>-->
-          <!--</i-dropdown-menu>-->
-          <!--</i-dropdown>-->
         </div>
       </div>
     </div>
@@ -92,7 +78,19 @@
                      :content="getTaskDateInterval(task)">
             <i-tag type="border" color="primary">{{index + 1}}.</i-tag>
             <i-tag :color="task.taskTag.color">{{task.taskTag.name}}</i-tag>
-            <i-tag :color="getTaskStatusColor(task.status.code)">{{task.status.name}}</i-tag>
+            <i-dropdown @on-click="updateTaskStatus($event, task)">
+              <i-button size="small"
+              :type="getTaskStatusColor(task.status.code)">
+                {{task.status.name}}
+                <i-icon type="ios-arrow-down"></i-icon>
+              </i-button>
+              <i-dropdown-menu slot="list">
+                <i-dropdown-item v-for="status in taskStatus"
+                                 :key="status.code" :name="status.code">
+                  {{status.name}}
+                </i-dropdown-item>
+              </i-dropdown-menu>
+            </i-dropdown>
             <i-tag color="cyan">{{task.project.name}}</i-tag>
             <i-tag type="border" color="purple"
                    @click.native="copyToClipboard(task.name)">{{task.name}}
@@ -121,16 +119,6 @@
         <div v-html="todayImplTaskContent"></div>
       </i-card>
     </as-modal>
-    <!--<as-modal title="报销详情" width="700" v-model="showReimburse">-->
-    <!--<i-table v-if="reimburse"-->
-    <!--:columns="reimburseTableColumns" :data="reimburse.items"></i-table>-->
-    <!--<as-empty-tip text="本月还没有生成过报销单" v-else></as-empty-tip>-->
-    <!--<div slot="footer">-->
-    <!--<i-button type="primary" v-if="!reimburse"-->
-    <!--@click="generateReimburse">生成报销内容-->
-    <!--</i-button>-->
-    <!--</div>-->
-    <!--</as-modal>-->
   </div>
 </template>
 
@@ -141,7 +129,6 @@
   import { activeCurrentItem, isTargetTag } from 'assets/scripts/dom'
   import dictionary, { getColor } from 'model/dictionary'
   import DailyRecord from 'model/dailyRecord'
-  // import Reimburse from 'model/reimburse'
   import _ from 'lodash'
 
   export default {
@@ -150,39 +137,21 @@
       return {
         loading: false,
         showDailyReport: false,
-        // showReimburse: false,
         currentYear: null,
         currentMonthId: null,
         currentDay: null,
-        // currentReimburseDailyId: null,
         todayFinishTaskContent: '',
         todayImplTaskContent: '',
         dailyRecord: new DailyRecord(-1),
-        // reimburse: null,
         dailies: [],
         years: [],
         months: [],
         days: []
-        // reimburseTableColumns: [
-        //   {
-        //     title: '日期',
-        //     key: 'reimburseDate'
-        //   },
-        //   {
-        //     title: '类型',
-        //     key: 'typeName'
-        //   },
-        //   {
-        //     title: '金额',
-        //     key: 'amount'
-        //   },
-        //   {
-        //     title: '操作',
-        //     slot: 'operate',
-        //     width: 150,
-        //     align: 'center'
-        //   }
-        // ]
+      }
+    },
+    computed: {
+      taskStatus() {
+        return dictionary.taskStatus.all()
       }
     },
     created () {
@@ -309,6 +278,16 @@
       // 获取任务状态颜色
       getTaskStatusColor (code) {
         return getColor(code)
+      },
+      updateTaskStatus (code, task) {
+        this.$api.task.status(task.id, {
+          organizationId: this.$parent.organizationId,
+          statusCode: code
+        }).then(() => {
+          this.$Message.success('状态更新成功')
+
+          task.status = dictionary.taskStatus.get(code)
+        })
       },
       // 获取任务时间段
       getTaskDateInterval (task) {
@@ -449,29 +428,6 @@
 
         return repayNum
       }
-      // 打开报销窗口
-      // openReimburseModal (dailyId) {
-      //   this.showReimburse = true
-      //   this.currentReimburseDailyId = dailyId
-      //
-      //   this.$api.reimburse.check(this.currentReimburseDailyId).then((res) => {
-      //     this.reimburse = res.data ? new Reimburse(res.data) : null
-      //
-      //     console.log(this.reimburse)
-      //   })
-      // },
-      // // 生成报销内容
-      // generateReimburse () {
-      //   this.$Modal.confirm({
-      //     title: '操作确认',
-      //     content: '如果本月存在加班记录，会被自动加入报销项目中，确定为本月生成报销记录？',
-      //     onOk: () => {
-      //       this.$api.reimburse.generate(this.currentReimburseDailyId).then(() => {
-      //         this.$Message.success('报销单已生成')
-      //       })
-      //     }
-      //   })
-      // }
     },
     components: {
       asModal,

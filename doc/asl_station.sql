@@ -160,58 +160,7 @@ ALTER TABLE al_daily_record
   ADD COLUMN isRest TINYINT(1) DEFAULT 0 COMMENT '是否休息' AFTER isRepay;
 
 
-/* 2019-06-30 */
--- 报销表
-CREATE TABLE al_reimburse (
-  id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
-  daily_id BIGINT COMMENT '所属日志',
-  status_code VARCHAR(255) COMMENT '状态',
-  createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  updateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  CONSTRAINT fk_reimburse_daily FOREIGN KEY (daily_id) REFERENCES al_daily (id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
-
--- 报销项目表
-CREATE TABLE al_reimburse_item (
-  id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
-  reimburse_id BIGINT COMMENT '所属报销',
-  dailyRecord_id BIGINT COMMENT '所属日志记录',
-  type_code VARCHAR(255) COMMENT '类型',
-  reimburseDate DATE COMMENT '报销日期',
-  amount DOUBLE COMMENT '金额',
-  createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  updateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  CONSTRAINT fk_reimburse_item_reimburse FOREIGN KEY (reimburse_id) REFERENCES al_reimburse (id),
-  CONSTRAINT fk_reimburse_item_daily_record FOREIGN KEY (dailyRecord_id) REFERENCES al_daily_record (id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
-
--- 报销发票表
-CREATE TABLE al_reimburse_invoice (
-  id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
-  reimburse_id BIGINT COMMENT '所属报销',
-  number VARCHAR(255) COMMENT '发票号码',
-  amount DOUBLE COMMENT '发票金额',
-  createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  updateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  CONSTRAINT fk_reimburse_invoice_reimburse FOREIGN KEY (reimburse_id) REFERENCES al_reimburse (id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
-
-
 /* 2019-07-03 */
--- 数据字典表新增报销项目类型
-INSERT INTO
-  sys_dictionary (category, code, name, indexNo)
-VALUES
-('com.asing1elife.teamnote.model.dictionary.ReimburseItemType', 'RITY_Extra', '加班', '0'),
-('com.asing1elife.teamnote.model.dictionary.ReimburseItemType', 'RITY_Fare', '车费', '1');
-
--- 数据字典表新增报销状态
-INSERT INTO
-  sys_dictionary (category, code, name, indexNo)
-VALUES
-('com.asing1elife.teamnote.model.dictionary.ReimburseStatus', 'RBST_Impl', '报销中', '0'),
-('com.asing1elife.teamnote.model.dictionary.ReimburseStatus', 'RBST_Finish', '已结算', '1');
-
 -- 修改日志记录表的部分字段
 ALTER TABLE al_daily_record
   CHANGE COLUMN isExtra extra TINYINT(1) COMMENT '加班',
