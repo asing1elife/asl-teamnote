@@ -40,7 +40,8 @@ module.exports = {
       'views': resolve('src/views'),
       'components': resolve('src/components'),
       'model': resolve('src/model'),
-      'store': resolve('src/store')
+      'store': resolve('src/store'),
+      'api': resolve('src/api')
     }
   },
   module: {

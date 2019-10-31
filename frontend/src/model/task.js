@@ -1,7 +1,7 @@
 import Base from './base'
 import TaskTag from './taskTag'
 import Project from './project'
-import { TaskLevel, TaskStatus } from './dictionary'
+import dictionary from './dictionary'
 
 export default class Task extends Base {
   _simple (id) {
@@ -10,8 +10,8 @@ export default class Task extends Base {
     this.description = ''
     this.taskTag = new TaskTag(-1)
     this.project = new Project(-1)
-    this.level = TaskLevel.normal
-    this.status = TaskStatus.init
+    this.level = dictionary.taskLevel.normal
+    this.status = dictionary.taskStatus.init
     this.planBeginDate = null
     this.planFinishDate = null
     this.beginDate = null
@@ -39,7 +39,7 @@ export default class Task extends Base {
   }
 
   set levelCode (code) {
-    this.level = TaskLevel.getDictionary(code)
+    this.level = dictionary.taskLevel.get(code)
   }
 
   get dateRange () {

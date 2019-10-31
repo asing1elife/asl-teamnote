@@ -1,7 +1,6 @@
 import * as fetch from 'assets/scripts/fetch'
 
 export default class BaseApi {
-
   /**
    * 构造函数
    * @param baseUrl 具体请求需要从子类传入
@@ -70,5 +69,4 @@ export default class BaseApi {
       url
     })
   }
-
 }

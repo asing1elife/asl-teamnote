@@ -13,6 +13,11 @@ const mutations = {
     state.currentOrganization = currentOrganization || appName
 
     localStorage.set(types.SET_CURRENT_ORGANIZATION, currentOrganization)
+  },
+  [types.SET_DICTIONARIES] (state, dictionaries) {
+    state.dictionaries = dictionaries
+
+    localStorage.set(types.SET_DICTIONARIES, dictionaries)
   }
 }
 

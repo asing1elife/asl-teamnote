@@ -139,7 +139,7 @@
   import asIcon from 'components/as-icon'
   import asEmptyTip from 'components/as-empty-tip'
   import { activeCurrentItem, isTargetTag } from 'assets/scripts/dom'
-  import { TaskStatus } from 'model/dictionary'
+  import dictionary, { getColor } from 'model/dictionary'
   import DailyRecord from 'model/dailyRecord'
   // import Reimburse from 'model/reimburse'
   import _ from 'lodash'
@@ -308,7 +308,7 @@
       },
       // 获取任务状态颜色
       getTaskStatusColor (code) {
-        return TaskStatus.getDictionaryColor(code)
+        return getColor(code)
       },
       // 获取任务时间段
       getTaskDateInterval (task) {
@@ -393,7 +393,7 @@
           let task = tasks[key]
 
           // 当前任务已完成
-          if (task.status.code === TaskStatus.finish.code) {
+          if (task.status.code === dictionary.taskStatus.finish.code) {
             // 已完成数量累加
             finishTaskNum++
 
@@ -403,7 +403,7 @@
           }
 
           // 当前任务进行中
-          if (task.status.code === TaskStatus.impl.code) {
+          if (task.status.code === dictionary.taskStatus.impl.code) {
             // 进行中数量累加
             implTaskNum++
 

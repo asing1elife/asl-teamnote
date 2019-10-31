@@ -146,7 +146,7 @@
   import Project from 'model/project'
   import Task from 'model/task'
   import TaskTag from 'model/taskTag'
-  import { TaskLevel, TaskStatus } from 'model/dictionary'
+  import dictionary, { getColor } from 'model/dictionary'
   import { isTargetTag } from 'assets/scripts/dom'
 
   export default {
@@ -211,10 +211,10 @@
         return `任务设置 ${this.task.project.name}`
       },
       taskLevels () {
-        return TaskLevel.getDictionaries()
+        return dictionary.taskLevel.all()
       },
       taskStatus () {
-        return TaskStatus.getDictionaries()
+        return dictionary.taskStatus.all()
       },
       tagColors () {
         return TaskTag.tagColors
@@ -373,11 +373,11 @@
       },
       // 获取任务级别颜色
       getTaskLevelColor (code) {
-        return TaskLevel.getDictionaryColor(code)
+        return getColor(code)
       },
       // 获取任务状态颜色
       getTaskStatusColor (code) {
-        return TaskStatus.getDictionaryColor(code)
+        return getColor(code)
       },
       // 获取项目任务数量
       getProjectTaskLength (project) {
@@ -385,7 +385,7 @@
       },
       // 检查任务完成状态
       checkTaskFinishStatus (task) {
-        return task.status.code === TaskStatus.finish.code
+        return task.status.code === dictionary.taskStatus.finish.code
       },
       // 修改状态
       updateTaskStatus (name, task) {
