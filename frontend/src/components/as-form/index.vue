@@ -67,7 +67,7 @@
               }
             })
           } else {
-            this.$Message.error('请规范填写表单内容！')
+            this.$Message.error('请规范填写表单内容')
           }
         })
       }

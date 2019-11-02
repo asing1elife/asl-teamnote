@@ -153,11 +153,11 @@
     name: 'project',
     data () {
       const validateTaskTag = (rule, value, callback) => {
-        if (!value || value.id === -1) {
+        if (!value || value.id === undefined || value.id === -1) {
           callback(new Error('请选择任务标签'))
+        } else {
+          callback()
         }
-
-        callback()
       }
       return {
         showProject: false,
