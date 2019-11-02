@@ -76,11 +76,13 @@
            :key="task.id">
           <i-tooltip placement="right" max-width="140"
                      :content="getTaskDateInterval(task)">
-            <i-tag type="border" color="primary">{{index + 1}}.</i-tag>
+            <i-tag class="task-item-index" type="border" color="primary">{{index + 1}}.</i-tag>
+            <i-button class="task-item-del-btn" type="error" icon="md-close"
+                      @click="delDailyRecordTaskRelate(dailyRecord, task)"></i-button>
             <i-tag :color="task.taskTag.color">{{task.taskTag.name}}</i-tag>
             <i-dropdown @on-click="updateTaskStatus($event, task)">
               <i-button size="small"
-              :type="getTaskStatusColor(task.status.code)">
+                        :type="getTaskStatusColor(task.status.code)">
                 {{task.status.name}}
                 <i-icon type="ios-arrow-down"></i-icon>
               </i-button>
@@ -124,7 +126,6 @@
 
 <script>
   import asModal from 'components/as-modal'
-  import asIcon from 'components/as-icon'
   import asEmptyTip from 'components/as-empty-tip'
   import { activeCurrentItem, isTargetTag } from 'assets/scripts/dom'
   import dictionary, { getColor } from 'model/dictionary'
@@ -150,7 +151,7 @@
       }
     },
     computed: {
-      taskStatus() {
+      taskStatus () {
         return dictionary.taskStatus.all()
       }
     },
@@ -427,11 +428,30 @@
         })
 
         return repayNum
+      },
+      // 删除日志与任务的关联
+      delDailyRecordTaskRelate (dailyRecord, task) {
+        this.$Modal.confirm({
+          title: '操作确认',
+          content: '确认将该任务从这一天的日志中删除？',
+          onOk: () => {
+            // 获取该任务在当前日志中的任务列表中的索引
+            let taskIndex = _.indexOf(dailyRecord.tasks, task)
+
+            // 从当前日志的任务列表中移除该任务
+            dailyRecord.tasks.splice(taskIndex, 1)
+
+            this.$api.dailyRecord.save(dailyRecord).then((res) => {
+              if (res.success) {
+                this.$Message.success('任务关联删除成功')
+              }
+            })
+          }
+        })
       }
     },
     components: {
       asModal,
-      asIcon,
       asEmptyTip
     }
   }
@@ -472,6 +492,16 @@
         .task-item
           margin-bottom 10px
           font-size $normal-size
+          &:hover
+            .task-item-index
+              display none
+            .task-item-del-btn
+              display inline
+          .task-item-del-btn
+            font-size 14px
+            height 24px
+            padding 0 6px
+            display none
     .section-content
       overflow-x auto
 
