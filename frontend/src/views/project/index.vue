@@ -254,6 +254,7 @@
       // 获取项目任务列表
       _getProjectTasks (project) {
         this.$api.task.unfinish(project.id).then((res) => {
+          project.tasks = []
           // 刷新项目任务列表
           this._refreshProjectTasks(project, res.data)
         })
@@ -391,8 +392,11 @@
 
             // 更新项目任务列表
             this._updateProjectTasks(projectId)
-            // 增加项目任务数量
-            this._addProjectTaskNum(projectId)
+
+            if (this.$refs.taskForm.model.id === -1) {
+              // 增加项目任务数量
+              this._addProjectTaskNum(projectId)
+            }
           }
         })
       },
