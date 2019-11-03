@@ -1,9 +1,13 @@
 package com.asing1elife.teamnote.core.service;
 
+import com.asing1elife.teamnote.core.exception.CustomException;
 import com.asing1elife.teamnote.core.repository.BaseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +31,10 @@ public class BaseService<T, Repository extends BaseRepository<T, Long>> implemen
     public void delete(long id) {
         logger.info("remove entity id -> {}", id);
         repository.deleteById(id);
+    }
+
+    public Page<T> page(HttpServletRequest request) {
+        throw new CustomException("this method must be override");
     }
 
     public List<T> findAll(Sort... sort) {

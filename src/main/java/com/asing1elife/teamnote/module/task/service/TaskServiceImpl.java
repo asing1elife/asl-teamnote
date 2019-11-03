@@ -10,9 +10,11 @@ import com.asing1elife.teamnote.module.daily.service.DailyServiceImpl;
 import com.asing1elife.teamnote.module.task.repository.TaskRepository;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -23,6 +25,16 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
 
     @Autowired
     private DailyRecordServiceImpl dailyRecordService;
+
+    @Override
+    public Page<TaskModel> page(HttpServletRequest request) {
+        long projectId = Long.valueOf(request.getParameter("projectId"));
+        int pageNo = Integer.valueOf(request.getParameter("pageNo"));
+
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.Direction.ASC, "level.code");
+
+        return repository.findByProject_Id(projectId, pageable);
+    }
 
     /**
      * 获取指定项目所有任务

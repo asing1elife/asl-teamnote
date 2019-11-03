@@ -9,4 +9,5 @@ import java.util.List;
 public interface BaseRepository<T, ID> extends JpaRepository<T, ID> {
 
     List<Object[]> listBySQL(String sql);
+
 }

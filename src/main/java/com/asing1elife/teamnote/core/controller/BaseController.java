@@ -6,10 +6,25 @@ import com.asing1elife.teamnote.core.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class BaseController<T, Service extends BaseService> {
 
     @Autowired
     protected Service service;
+
+    @Autowired
+    protected HttpServletRequest request;
+
+    @PostMapping("/page")
+    public ResponseData page() {
+        return new ControllerHandler() {
+            @Override
+            public void doHandler(ResponseData responseData) {
+                responseData.setData(service.page(request));
+            }
+        }.handle();
+    }
 
     @GetMapping("")
     public ResponseData list() {
