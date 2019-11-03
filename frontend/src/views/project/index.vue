@@ -242,7 +242,7 @@
 
           // 异步获取项目任务列表
           this.projects.forEach((project) => {
-            this._getTasksByProject(project)
+            this._getProjectTasks(project)
           })
         })
       },
@@ -252,12 +252,34 @@
         })
       },
       // 获取项目任务列表
-      _getTasksByProject (project) {
+      _getProjectTasks (project) {
         this.$api.task.unfinish(project.id).then((res) => {
-          project.tasks = res.data
-          // 用于触发DOM渲染
-          project.name += ' '
+          // 刷新项目任务列表
+          this._refreshProjectTasks(project, res.data)
         })
+      },
+      // 刷新项目任务列表
+      _refreshProjectTasks (project, tasks) {
+        // 先获取当前项目在整个项目列表中的索引
+        let indexOf = _.indexOf(this.projects, project)
+
+        // 将合并后的任务列表重新赋值给当前项目
+        project.tasks = _.unionWith(project.tasks, tasks, (oldTask, newTask) => {
+          return oldTask.id === newTask.id
+        })
+
+        // 替换整个项目列表中的当前项目
+        this.projects.splice(indexOf, 1, project)
+      },
+      // 删除项目任务
+      _delProjectTasks (projectId, task) {
+        let project = this._getCurrentProjectName(projectId)
+
+        let indexOfTask = _.indexOf(project.tasks, task)
+        let indexOfProject = _.indexOf(this.projects, project)
+
+        project.tasks.splice(indexOfTask, 1)
+        this.projects.splice(indexOfProject, 1, project)
       },
       _getProject (projectId) {
         this.$api.project.get(projectId).then((res) => {
@@ -295,16 +317,26 @@
         })
       },
       // 更新项目任务列表
-      _updateProjectTasks (taskProjectId) {
+      _updateProjectTasks (projectId) {
         // 获取当前任务所属项目
-        let project = this.projects.find((project) => {
-          return project.id === taskProjectId
-        })
+        let project = this._getCurrentProjectName(projectId)
 
         if (project) {
           // 更新项目任务列表
-          this._getTasksByProject(project)
+          this._getProjectTasks(project)
         }
+      },
+      // 增加项目任务数量
+      _addProjectTaskNum (projectId) {
+        let project = this._getCurrentProjectName(projectId)
+
+        project.taskNum++
+      },
+      // 减少项目任务数量
+      _reduceProjectTaskNum (projectId) {
+        let project = this._getCurrentProjectName(projectId)
+
+        project.taskNum--
       },
       openProjectModal (projectId) {
         this._getProject(projectId)
@@ -355,9 +387,12 @@
           url: this.$api.task.baseUrl,
           success: (res) => {
             let task = res.data
+            let projectId = task.project.id
 
             // 更新项目任务列表
-            this._updateProjectTasks(task.project.id)
+            this._updateProjectTasks(projectId)
+            // 增加项目任务数量
+            this._addProjectTaskNum(projectId)
           }
         })
       },
@@ -409,9 +444,13 @@
           onOk: () => {
             this.$api.task.del(task.id).then((res) => {
               if (res.success) {
-                this.$Message.success('删除成功')
+                let projectId = task.project.id
 
-                this._updateProjectTasks(task.project.id)
+                this._delProjectTasks(projectId, task)
+                // 减少项目任务数量
+                this._reduceProjectTaskNum(projectId)
+
+                this.$Message.success('删除成功')
               }
             })
           }
@@ -429,14 +468,8 @@
       loadingFinishTasks (project) {
         this.$api.task.finish(project.id).then((res) => {
           if (res.success) {
-            // 先获取当前项目在整个项目列表中的索引
-            let indexOf = _.indexOf(this.projects, project)
-
-            // 将合并后的任务列表重新赋值给当前项目
-            project.tasks = _.union(project.tasks, res.data)
-
-            // 替换整个项目列表中的当前项目
-            this.projects.splice(indexOf, 1, project)
+            // 刷新项目任务列表
+            this._refreshProjectTasks(project, res.data)
           }
         })
       }
@@ -468,6 +501,7 @@
           flex-grow 1
           display flex
           flex-direction column
+          overflow hidden
           padding 0
           .project-task-list
             flex-grow 1
@@ -486,6 +520,7 @@
               margin-left 15px
               margin-bottom 10px
               display flex
+              flex-shrink 0
               padding 10px 10px 10px 0
               transition box-shadow .1s
               cursor pointer

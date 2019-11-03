@@ -7,6 +7,7 @@ import com.asing1elife.teamnote.model.TaskModel;
 import com.asing1elife.teamnote.model.dictionary.TaskStatus;
 import com.asing1elife.teamnote.module.daily.service.DailyRecordServiceImpl;
 import com.asing1elife.teamnote.module.daily.service.DailyServiceImpl;
+import com.asing1elife.teamnote.module.project.service.ProjectServiceImpl;
 import com.asing1elife.teamnote.module.task.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,9 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
 
     @Autowired
     private DailyRecordServiceImpl dailyRecordService;
+
+    @Autowired
+    private ProjectServiceImpl projectService;
 
     @Override
     public Page<TaskModel> page(HttpServletRequest request) {
@@ -88,19 +92,42 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
         super.save(task);
     }
 
+    @Override
+    @Transactional
+    public TaskModel save(TaskModel task) {
+        // 新增任务时，所属项目中的任务数量需要累加
+        if (task.isNew()) {
+            projectService.addProjectTaskNum(task.getProject().getId());
+        }
+
+        return super.save(task);
+    }
+
     /**
      * 删除任务
      */
     @Override
     @Transactional
     public void delete(long id) {
-        // 先删除与之关联的任务日志
         TaskModel task = super.getOne(id);
-        task.setRecords(null);
-        super.save(task);
+
+        // 从与之关联的任务日志中删除该任务
+        deleteDailyRecordTaskRelate(task);
+
+        // 删除任务时，所属项目的任务数量需要减少
+        projectService.reduceProjectTaskNum(task.getProject().getId());
 
         // 再删除任务
         super.delete(id);
+    }
+
+    /**
+     * 从与之关联的任务日志中删除该任务
+     */
+    private void deleteDailyRecordTaskRelate(TaskModel task) {
+        task.setRecords(null);
+
+        super.save(task);
     }
 
     /**

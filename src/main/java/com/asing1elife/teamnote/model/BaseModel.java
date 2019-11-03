@@ -22,6 +22,10 @@ public class BaseModel {
     @Column
     private Date updateTime = DateUtil.getSysDate();
 
+    public Boolean isNew() {
+        return id != 0L;
+    }
+
     public Long getId() {
         return id;
     }
