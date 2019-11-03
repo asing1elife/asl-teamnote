@@ -6,6 +6,28 @@ class TaskApi extends BaseApi {
   }
 
   /**
+   * 获取未完成任务列表
+   */
+  unfinish (projectId) {
+    const url = `${this.baseUrl}/${projectId}/unfinish`
+
+    return this.fetch.get({
+      url
+    })
+  }
+
+  /**
+   * 获取已完成任务列表
+   */
+  finish (projectId) {
+    const url = `${this.baseUrl}/${projectId}/finish`
+
+    return this.fetch.get({
+      url
+    })
+  }
+
+  /**
    * 状态
    */
   status (id, params) {

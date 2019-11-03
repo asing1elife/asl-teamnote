@@ -11,12 +11,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/tasks")
 public class TaskController extends BaseController<TaskModel, TaskServiceImpl> {
 
-    @PostMapping("")
-    public ResponseData tasks(@RequestParam long projectId) {
+    @GetMapping("/{projectId}/unfinish")
+    public ResponseData unFinishTasks(@PathVariable long projectId) {
         return new ControllerHandler() {
             @Override
             public void doHandler(ResponseData responseData) {
-                responseData.setData(service.findByProjectId(projectId));
+                responseData.setData(service.findUnFinishTasksByProjectId(projectId));
+            }
+        }.handle();
+    }
+
+    @GetMapping("/{projectId}/finish")
+    public ResponseData finishTasks(@PathVariable long projectId) {
+        return new ControllerHandler() {
+            @Override
+            public void doHandler(ResponseData responseData) {
+                responseData.setData(service.findFinishTasksByProjectId(projectId));
             }
         }.handle();
     }

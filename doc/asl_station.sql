@@ -170,3 +170,9 @@ ALTER TABLE al_daily_record
 -- 修改日志表部分字段
 ALTER TABLE al_daily
   CHANGE COLUMN isExpense expense TINYINT(1) COMMENT '报销';
+
+
+/* 2019-11-03 */
+-- 项目表新增任务数量字段
+ALTER TABLE al_project
+ADD COLUMN taskNum INT DEFAULT 0 COMMENT '任务数量' AFTER indexNo;

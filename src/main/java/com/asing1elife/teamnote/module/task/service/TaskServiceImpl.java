@@ -8,9 +8,11 @@ import com.asing1elife.teamnote.model.dictionary.TaskStatus;
 import com.asing1elife.teamnote.module.daily.service.DailyRecordServiceImpl;
 import com.asing1elife.teamnote.module.daily.service.DailyServiceImpl;
 import com.asing1elife.teamnote.module.task.repository.TaskRepository;
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,19 +39,17 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
     }
 
     /**
-     * 获取指定项目所有任务
+     * 获取指定项目未完成的任务列表
      */
-    public List<TaskModel> findByProjectId(long projectId) {
-        List<TaskModel> tasks = Lists.newArrayList();
+    public List<TaskModel> findUnFinishTasksByProjectId(long projectId) {
+        return repository.findByStatusNotAndProject_IdOrderByLevelDescStatusAsc(TaskStatus.TAST_Finish, projectId);
+    }
 
-        // 先获取初始化和进行中的任务
-        List<TaskModel> unFinishTasks = repository.findByStatusNotAndProject_IdOrderByLevelDescStatusAsc(TaskStatus.TAST_Finish, projectId);
-        // 再获取已完成的任务
-        List<TaskModel> finishTasks = repository.findByStatusAndProject_IdOrderByLevelDescStatusAsc(TaskStatus.TAST_Finish, projectId);
-
-        tasks.addAll(unFinishTasks);
-        tasks.addAll(finishTasks);
-        return tasks;
+    /**
+     * 获取指定项目已完成的任务列表
+     */
+    public List<TaskModel> findFinishTasksByProjectId(long projectId) {
+        return repository.findByStatusAndProject_IdOrderByLevelDescStatusAsc(TaskStatus.TAST_Finish, projectId);
     }
 
     /**

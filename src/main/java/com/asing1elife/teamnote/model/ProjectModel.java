@@ -21,12 +21,11 @@ public class ProjectModel extends BaseModel {
     @Column
     private Integer indexNo;
 
+    @Column
+    private Integer taskNum;
+
     @ManyToOne
     private OrganizationModel organization;
 
-    // @OrderBy("status_code DESC, level_code DESC")
-    // @OneToMany(mappedBy = "project")
-    // @JsonManagedReference
-    // private List<TaskModel> tasks = Lists.newArrayList();
 
 }

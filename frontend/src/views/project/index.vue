@@ -18,11 +18,11 @@
           </i-dropdown-item>
         </i-dropdown-menu>
       </i-dropdown>
-      <p slot="title">{{project.name}} · <span class="text-mute">{{getProjectTaskLength(project)}}</span></p>
+      <p slot="title">{{project.name}} · <span class="text-mute">{{project.taskNum}}</span></p>
       <div class="project-task-list">
         <div class="task-item"
              v-for="task in project.tasks"
-             :key="task.id" :class="checkTaskFinishStatus(task) ? 'finish':''" :style="{borderLeftColor: getTaskLevelColor(task.level.code)}"
+             :key="task.id" :class="getTaskFinishClassName(task)" :style="{borderLeftColor: getTaskLevelColor(task.level.code)}"
              @click="openTaskModal($event, task.id, project.id)">
           <as-icon ghost class="task-del-btn" name="close"
                    @click="delTask(task)"></as-icon>
@@ -46,6 +46,11 @@
             </div>
           </div>
         </div>
+        <i-button class="load-finish-task-btn" size="small" type="info"
+                  v-show="showLoadingFinishTaskBtn(project)"
+                  @click="loadingFinishTasks(project)">
+          加载已完成任务
+        </i-button>
       </div>
       <i-button class="new-task-btn" size="small"
                 @click="openTaskModal($event, -1, project.id)">
@@ -148,6 +153,7 @@
   import TaskTag from 'model/taskTag'
   import dictionary, { getColor } from 'model/dictionary'
   import { isTargetTag } from 'assets/scripts/dom'
+  import _ from 'lodash'
 
   export default {
     name: 'project',
@@ -163,6 +169,7 @@
         showProject: false,
         showTask: false,
         showTaskTag: false,
+        finishTasksLoading: false,
         taskTagUrl: this.$api.taskTag.baseUrl,
         project: new Project(-1),
         task: new Task(-1),
@@ -246,9 +253,7 @@
       },
       // 获取项目任务列表
       _getTasksByProject (project) {
-        this.$api.task.list({
-          projectId: project.id
-        }).then((res) => {
+        this.$api.task.unfinish(project.id).then((res) => {
           project.tasks = res.data
           // 用于触发DOM渲染
           project.name += ' '
@@ -379,13 +384,11 @@
       getTaskStatusColor (code) {
         return getColor(code)
       },
-      // 获取项目任务数量
-      getProjectTaskLength (project) {
-        return project ? project.tasks ? project.tasks.length : 0 : 0
-      },
       // 检查任务完成状态
-      checkTaskFinishStatus (task) {
-        return task.status.code === dictionary.taskStatus.finish.code
+      getTaskFinishClassName (task) {
+        let isFinish = task.status.code === dictionary.taskStatus.finish.code
+
+        return isFinish ? 'finish' : ''
       },
       // 修改状态
       updateTaskStatus (name, task) {
@@ -411,6 +414,29 @@
                 this._updateProjectTasks(task.project.id)
               }
             })
+          }
+        })
+      },
+      // 显示加载已完成任务按钮
+      showLoadingFinishTaskBtn (project) {
+        if (project.tasks) {
+          return project.tasks.length !== project.taskNum
+        }
+
+        return true
+      },
+      // 加载项目已完成任务列表
+      loadingFinishTasks (project) {
+        this.$api.task.finish(project.id).then((res) => {
+          if (res.success) {
+            // 先获取当前项目在整个项目列表中的索引
+            let indexOf = _.indexOf(this.projects, project)
+
+            // 将合并后的任务列表重新赋值给当前项目
+            project.tasks = _.union(project.tasks, res.data)
+
+            // 替换整个项目列表中的当前项目
+            this.projects.splice(indexOf, 1, project)
           }
         })
       }
@@ -445,6 +471,9 @@
           padding 0
           .project-task-list
             flex-grow 1
+            display flex
+            flex-direction column
+            align-items center
             overflow auto
             margin-bottom 15px
             padding-top 15px
