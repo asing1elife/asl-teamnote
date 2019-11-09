@@ -92,17 +92,17 @@ CREATE TABLE al_task (
 INSERT INTO
   sys_dictionary (category, code, name, indexNo)
 VALUES
-('com.asing1elife.teamnote.model.dictionary.TaskLevel', 'TALE_Normal', '普通', '0'),
-('com.asing1elife.teamnote.model.dictionary.TaskLevel', 'TALE_Urgency', '紧急', '1'),
-('com.asing1elife.teamnote.model.dictionary.TaskLevel', 'TALE_Very', '非常紧急', '2');
+  ('com.asing1elife.teamnote.model.dictionary.TaskLevel', 'TALE_Normal', '普通', '0'),
+  ('com.asing1elife.teamnote.model.dictionary.TaskLevel', 'TALE_Urgency', '紧急', '1'),
+  ('com.asing1elife.teamnote.model.dictionary.TaskLevel', 'TALE_Very', '非常紧急', '2');
 
 -- 数据字典表新增任务状态
 INSERT INTO
   sys_dictionary (category, code, name, indexNo)
 VALUES
-('com.asing1elife.teamnote.model.dictionary.TaskStatus', 'TAST_Init', '初始化', '0'),
-('com.asing1elife.teamnote.model.dictionary.TaskStatus', 'TAST_Impl', '进行中', '1'),
-('com.asing1elife.teamnote.model.dictionary.TaskStatus', 'TAST_Finish', '已完成', '2');
+  ('com.asing1elife.teamnote.model.dictionary.TaskStatus', 'TAST_Init', '初始化', '0'),
+  ('com.asing1elife.teamnote.model.dictionary.TaskStatus', 'TAST_Impl', '进行中', '1'),
+  ('com.asing1elife.teamnote.model.dictionary.TaskStatus', 'TAST_Finish', '已完成', '2');
 
 
 /* 2019-03-24 */
@@ -175,4 +175,26 @@ ALTER TABLE al_daily
 /* 2019-11-03 */
 -- 项目表新增任务数量字段
 ALTER TABLE al_project
-ADD COLUMN taskNum INT DEFAULT 0 COMMENT '任务数量' AFTER indexNo;
+  ADD COLUMN taskNum INT DEFAULT 0 COMMENT '任务数量' AFTER indexNo;
+
+/* 2019-11-06 */
+-- 修正项目表的任务数量
+UPDATE
+  al_project pru
+SET
+  pru.taskNum = (
+    SELECT
+      result.taskNum
+    FROM
+      (SELECT
+         pr.id AS id,
+         COUNT(ta.id) AS taskNum
+       FROM
+         al_project pr
+         LEFT JOIN al_task ta ON pr.id = ta.project_id
+       GROUP BY pr.id) AS result
+    WHERE
+      result.id = pru.id
+  )
+WHERE
+  1 = 1;

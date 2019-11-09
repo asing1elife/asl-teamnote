@@ -12,8 +12,6 @@ export default class Task extends Base {
     this.project = new Project(-1)
     this.level = dictionary.taskLevel.normal
     this.status = dictionary.taskStatus.init
-    this.planBeginDate = null
-    this.planFinishDate = null
     this.beginDate = null
     this.finishDate = null
     this.records = []
@@ -27,8 +25,6 @@ export default class Task extends Base {
     this.project = new Project(data.project)
     this.level = data.level
     this.status = data.status
-    this.planBeginDate = data.planBeginDate
-    this.planFinishDate = data.planFinishDate
     this.beginDate = data.beginDate
     this.finishDate = data.finishDate
     this.records = data.records
@@ -43,11 +39,17 @@ export default class Task extends Base {
   }
 
   get dateRange () {
-    return [this.planBeginDate, this.planFinishDate]
-  }
+    let dateRange = null
 
-  set dateRange (range) {
-    this.planBeginDate = range[0]
-    this.planFinishDate = range[1]
+    if (this.beginDate) {
+      dateRange = ''
+      dateRange += `${this.beginDate} ~ `
+    }
+
+    if (this.finishDate) {
+      dateRange += this.finishDate
+    }
+
+    return dateRange
   }
 }

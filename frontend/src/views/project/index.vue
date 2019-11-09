@@ -24,7 +24,8 @@
              v-for="task in project.tasks"
              :key="task.id" :class="getTaskFinishClassName(task)" :style="{borderLeftColor: getTaskLevelColor(task.level.code)}"
              @click="openTaskModal($event, task.id, project.id)">
-          <as-icon ghost class="task-del-btn" name="close"
+          <as-icon ghost
+                   class="task-del-btn" name="close"
                    @click="delTask(task)"></as-icon>
           <div class="task-content">
             <div class="task-name">{{task.name}}</div>
@@ -61,7 +62,8 @@
       <as-icon size="large" text="创建新项目"
                @click="openProjectModal(-1)"></as-icon>
     </i-card>
-    <as-modal title="项目设置" v-model="showProject"
+    <as-modal title="项目设置"
+              v-model="showProject"
               :ok="projectSubmit">
       <as-form ref="projectForm"
                :model="project" :rules="projectRules">
@@ -99,7 +101,8 @@
                       v-model="showTaskTag">
               <as-icon class="add-task-tag-btn" name="plus-circle-f"></as-icon>
               <div slot="content">
-                <as-form button ref="taskTagForm"
+                <as-form button
+                         ref="taskTagForm"
                          :model="taskTag" :rules="taskTagRules" :url="taskTagUrl" :success="refreshTaskTags">
                   <i-form-item prop="name"
                                :show-message="false">
@@ -121,9 +124,9 @@
           </div>
         </i-form-item>
         <i-form-item prop="period" label="任务时间"
+                     v-show="task.dateRange"
                      :label-width="70">
-          <i-date-picker v-model="task.dateRange" type="datetimerange" format="yyyy-MM-dd HH:mm"
-                         placeholder="开始时间 - 完成时间" style="width: 250px;"></i-date-picker>
+          {{task.dateRange}}
         </i-form-item>
         <i-form-item prop="level" label="任务级别"
                      :label-width="70">
@@ -215,7 +218,7 @@
     },
     computed: {
       taskTitle () {
-        return `任务设置 ${this.task.project.name}`
+        return `任务设置 · ${this.task.project.name}`
       },
       taskLevels () {
         return dictionary.taskLevel.all()
