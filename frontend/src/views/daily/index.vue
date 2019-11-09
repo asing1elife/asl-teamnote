@@ -71,11 +71,14 @@
         </div>
       </div>
       <div class="section-content">
-        <p class="task-item"
-           v-for="(task, index) in dailyRecord.tasks"
-           :key="task.id">
-          <i-tooltip placement="right" max-width="140"
-                     :content="getTaskDateInterval(task)">
+        <div class="task-item"
+             v-for="(task, index) in dailyRecord.tasks"
+             :key="task.id">
+          <i-tooltip placement="right" max-width="170">
+            <div slot="content">
+              <p>{{task.beginDate}}</p>
+              <p v-show="task.finishDate">{{task.finishDate}}</p>
+            </div>
             <i-tag class="task-item-index" type="border" color="primary">{{index + 1}}.</i-tag>
             <i-button class="task-item-del-btn" type="error" icon="md-close"
                       @click="delDailyRecordTaskRelate(dailyRecord, task)"></i-button>
@@ -98,7 +101,7 @@
                    @click.native="copyToClipboard(task.name)">{{task.name}}
             </i-tag>
           </i-tooltip>
-        </p>
+        </div>
       </div>
       <div class="section-footer">
         <i-button type="primary"
@@ -106,7 +109,9 @@
         </i-button>
       </div>
     </div>
-    <as-modal footer-hide v-model="showDailyReport" class-name="daily-report-modal">
+    <as-modal footer-hide
+              class-name="daily-report-modal"
+              v-model="dailyReportShow">
       <div slot="header" class="ivu-modal-header-inner">日报
         <small>点击面板可以直接复制内容</small>
       </div>
@@ -137,7 +142,7 @@
     data () {
       return {
         loading: false,
-        showDailyReport: false,
+        dailyReportShow: false,
         currentYear: null,
         currentMonthId: null,
         currentDay: null,
@@ -292,7 +297,13 @@
       },
       // 获取任务时间段
       getTaskDateInterval (task) {
-        return `${task.beginDate} ${task.finishDate || '~'}`
+        let dateRange = `${task.beginDate} `
+
+        if (task.finishDate) {
+          dateRange += task.finishDate
+        }
+
+        return dateRange
       },
       // 更新加班状态
       changeExtra (val) {
@@ -354,7 +365,7 @@
       },
       // 生成日报
       generateDailyReport () {
-        this.showDailyReport = true
+        this.dailyReportShow = true
 
         // 重置
         this.todayFinishTaskContent = ''
@@ -505,6 +516,8 @@
             height 24px
             padding 0 6px
             display none
+          .ivu-tooltip-inner-with-width
+            white-space normal
     .section-content
       overflow-x auto
 

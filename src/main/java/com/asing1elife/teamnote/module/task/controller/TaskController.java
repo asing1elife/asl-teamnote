@@ -41,4 +41,14 @@ public class TaskController extends BaseController<TaskModel, TaskServiceImpl> {
         }.handle();
     }
 
+    @PostMapping("/{organizationId}/search")
+    public ResponseData search(@PathVariable long organizationId, @RequestParam String taskName) {
+        return new ControllerHandler() {
+            @Override
+            public void doHandler(ResponseData responseData) {
+                responseData.setData(service.getOrganizationTasksByName(organizationId, taskName));
+            }
+        }.handle();
+    }
+
 }

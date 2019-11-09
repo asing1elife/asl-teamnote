@@ -32,6 +32,13 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
     @Autowired
     private ProjectServiceImpl projectService;
 
+    /**
+     * 获取对应组织和名称的任务列表
+     */
+    public List<TaskModel> getOrganizationTasksByName(long organizationId, String taskName) {
+        return repository.findByProject_Organization_idAndNameLike(organizationId, taskName);
+    }
+
     @Override
     public Page<TaskModel> page(HttpServletRequest request) {
         long projectId = Long.valueOf(request.getParameter("projectId"));
@@ -92,6 +99,40 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
         super.save(task);
     }
 
+    /**
+     * 更新日志记录和任务的关联
+     */
+    private void updateDailyRecordTaskRelation(TaskModel task, long organizationId) {
+        // 获取或新增日志及日志记录
+        // 因为日志和日志记录默认是每次点击日志tab时检测并创建，但有可能一开始进入页面直接对任务进行操作，所以此处也需要检测
+        DailyRecordModel record = dailyService.getOrSaveDailyAndRecord(organizationId);
+        // 获取日志记录任务列表
+        List<TaskModel> tasks = record.getTasks();
+
+        // 不存在则添加关联
+        if (getCurrentTask(tasks, task) == null) {
+            tasks.add(task);
+        }
+
+        dailyRecordService.updateDailyRecordTask(record);
+    }
+
+    /**
+     * 从列表中获取当前任务
+     */
+    private TaskModel getCurrentTask(List<TaskModel> tasks, TaskModel task) {
+        TaskModel currentTask = null;
+
+        for (TaskModel tempTask : tasks) {
+            if (tempTask.getId().equals(task.getId())) {
+                currentTask = tempTask;
+                break;
+            }
+        }
+
+        return currentTask;
+    }
+
     @Override
     @Transactional
     public TaskModel save(TaskModel task) {
@@ -128,40 +169,6 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
         task.setRecords(null);
 
         super.save(task);
-    }
-
-    /**
-     * 更新日志记录和任务的关联
-     */
-    private void updateDailyRecordTaskRelation(TaskModel task, long organizationId) {
-        // 获取或新增日志及日志记录
-        // 因为日志和日志记录默认是每次点击日志tab时检测并创建，但有可能一开始进入页面直接对任务进行操作，所以此处也需要检测
-        DailyRecordModel record = dailyService.getOrSaveDailyAndRecord(organizationId);
-        // 获取日志记录任务列表
-        List<TaskModel> tasks = record.getTasks();
-
-        // 不存在则添加关联
-        if (getCurrentTask(tasks, task) == null) {
-            tasks.add(task);
-        }
-
-        dailyRecordService.updateDailyRecordTask(record);
-    }
-
-    /**
-     * 从列表中获取当前任务
-     */
-    private TaskModel getCurrentTask(List<TaskModel> tasks, TaskModel task) {
-        TaskModel currentTask = null;
-
-        for (TaskModel tempTask : tasks) {
-            if (tempTask.getId().equals(task.getId())) {
-                currentTask = tempTask;
-                break;
-            }
-        }
-
-        return currentTask;
     }
 
 }

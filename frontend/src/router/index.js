@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import iView from 'iview'
+import viewUI from 'view-design'
 
 import index from 'views/index'
 
@@ -50,7 +50,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  iView.LoadingBar.start()
+  viewUI.LoadingBar.start()
 
   let path = to.path
 
@@ -65,7 +65,7 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach(() => {
-  iView.LoadingBar.finish()
+  viewUI.LoadingBar.finish()
 })
 
 export default router

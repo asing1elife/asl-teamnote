@@ -88,7 +88,7 @@
         <i-form-item prop="description" label="任务描述">
           <i-input placeholder="请输入任务描述" type="textarea"
                    v-model="task.description"
-                   :maxlength="500" :rows="4"></i-input>
+                   :maxlength="500" :autosize="{ minRows: 4, maxRows: 4 }"></i-input>
         </i-form-item>
         <i-form-item prop="taskTag" label="任务标签"
                      :show-message="false">

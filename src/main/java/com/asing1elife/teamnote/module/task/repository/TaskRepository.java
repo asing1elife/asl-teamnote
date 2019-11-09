@@ -30,4 +30,9 @@ public interface TaskRepository extends BaseRepository<TaskModel, Long> {
      */
     List<TaskModel> findByProject_Organization_idAndStatus(long organizationId, TaskStatus status);
 
+    /**
+     * 获取对应组织和名称的任务列表
+     */
+    List<TaskModel> findByProject_Organization_idAndNameLike(long organizationId, String taskName);
+
 }

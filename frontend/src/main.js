@@ -7,18 +7,18 @@ import store from './store'
 
 import api from './api'
 
-import iview from 'iview'
+import viewUI from 'view-design'
 import vueclipboard from 'vue-clipboard2'
 
 import './assets/stylus/index.styl'
-import 'iview/dist/styles/iview.css'
+import 'view-design/dist/styles/iview.css'
 
 Vue.config.productionTip = false
 
 // 访问后端接口的统一入口
 Vue.use(api)
 
-Vue.use(iview)
+Vue.use(viewUI)
 Vue.use(vueclipboard)
 
 /* eslint-disable no-new */

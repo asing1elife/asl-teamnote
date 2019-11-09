@@ -38,6 +38,20 @@ class TaskApi extends BaseApi {
       params
     })
   }
+
+  /**
+   * 搜索
+   */
+  search ({organizationId, taskName}) {
+    const url = `${this.baseUrl}/${organizationId}/search`
+
+    return this.fetch.post({
+      url,
+      params: {
+        taskName: taskName
+      }
+    })
+  }
 }
 
 export default new TaskApi()
