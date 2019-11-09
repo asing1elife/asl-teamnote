@@ -367,8 +367,11 @@
         // 进行中任务数量
         let implTaskNum = 0
 
+        // 先按项目名称排序
+        let orderTasks = _.orderBy(tasks, ['project.name', 'asc'])
+
         // 轮询任务列表
-        for (let key in tasks) {
+        for (let key in orderTasks) {
           // 获取当前任务
           let task = tasks[key]
 
@@ -377,7 +380,7 @@
             // 已完成数量累加
             finishTaskNum++
 
-            let finishTaskContent = `${finishTaskNum}. ${task.name} <br>`
+            let finishTaskContent = `${finishTaskNum}. [ ${task.project.name} ] ${task.name} <br>`
 
             this.todayFinishTaskContent += finishTaskContent
           }
@@ -387,7 +390,7 @@
             // 进行中数量累加
             implTaskNum++
 
-            let implTaskContent = `${implTaskNum}. ${task.name} <br>`
+            let implTaskContent = `${implTaskNum}. [ ${task.project.name} ] ${task.name} <br>`
 
             this.todayImplTaskContent += implTaskContent
           }
