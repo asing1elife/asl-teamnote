@@ -4,6 +4,7 @@ import com.asing1elife.teamnote.core.service.BaseService;
 import com.asing1elife.teamnote.model.ProjectModel;
 import com.asing1elife.teamnote.module.project.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,6 +36,19 @@ public class ProjectServiceImpl extends BaseService<ProjectModel, ProjectReposit
         project.reduceTaskNum();
 
         super.save(project);
+    }
+
+    /**
+     * 项目排序
+     */
+    @Transactional
+    public void sortProjects(List<ProjectModel> projects) {
+        for (int i = 0; i < projects.size(); i++) {
+            ProjectModel project = projects.get(i);
+            project.setIndexNo(i);
+
+            super.save(project);
+        }
     }
 
 }

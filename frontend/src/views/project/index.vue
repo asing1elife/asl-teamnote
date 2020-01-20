@@ -1,67 +1,72 @@
 <template>
   <div id="projectPanel" class="real-content">
-    <i-card class="project-item"
-            v-for="project in projects"
-            :key="project.id">
-      <i-dropdown slot="extra">
-        <a href="javascript:">
-          <as-icon name="more-horizontal-f"></as-icon>
-        </a>
-        <i-dropdown-menu slot="list">
-          <i-dropdown-item name="update">
-            <as-icon name="cog" text="项目设置" direction="right"
-                     @click="openProjectModal(project.id)"></as-icon>
-          </i-dropdown-item>
-          <i-dropdown-item name="del">
-            <as-icon name="trash" text="删除项目" direction="right" color="error"
-                     @click="delProject(project.id)"></as-icon>
-          </i-dropdown-item>
-        </i-dropdown-menu>
-      </i-dropdown>
-      <p slot="title">{{project.name}} · <span class="text-mute">{{project.taskNum}}</span></p>
-      <div class="project-task-list">
-        <div class="task-item"
-             v-for="task in project.tasks"
-             :key="task.id" :class="getTaskFinishClassName(task)" :style="{borderLeftColor: getTaskLevelColor(task.level.code)}"
-             @click="openTaskModal($event, task.id, project.id)">
-          <as-icon ghost
-                   class="task-del-btn" name="close"
-                   @click="delTask(task)"></as-icon>
-          <div class="task-content">
-            <div class="task-name">{{task.name}}</div>
-            <div class="task-tag">
-              <i-tag :color="task.taskTag.color">{{task.taskTag.name}}</i-tag>
-              <i-dropdown @on-click="updateTaskStatus($event, task)">
-                <i-button size="small"
-                          :type="getTaskStatusColor(task.status.code)">
-                  {{task.status.name}}
-                  <i-icon type="ios-arrow-down"></i-icon>
-                </i-button>
-                <i-dropdown-menu slot="list">
-                  <i-dropdown-item v-for="status in taskStatus"
-                                   :key="status.code" :name="status.code">
-                    {{status.name}}
-                  </i-dropdown-item>
-                </i-dropdown-menu>
-              </i-dropdown>
+    <draggable class="project-draggable-wrapper"
+               v-model="projects"
+               :options="draggableOptions"
+               @end="dragEndHandler">
+      <i-card class="project-item"
+              v-for="project in projects"
+              :key="project.id">
+        <i-dropdown slot="extra">
+          <a href="javascript:">
+            <as-icon name="more-horizontal-f"></as-icon>
+          </a>
+          <i-dropdown-menu slot="list">
+            <i-dropdown-item name="update">
+              <as-icon name="cog" text="项目设置" direction="right"
+                       @click="openProjectModal(project.id)"></as-icon>
+            </i-dropdown-item>
+            <i-dropdown-item name="del">
+              <as-icon name="trash" text="删除项目" direction="right" color="error"
+                       @click="delProject(project.id)"></as-icon>
+            </i-dropdown-item>
+          </i-dropdown-menu>
+        </i-dropdown>
+        <p slot="title">{{project.name}} · <span class="text-mute">{{project.taskNum}}</span></p>
+        <div class="project-task-list">
+          <div class="task-item"
+               v-for="task in project.tasks"
+               :key="task.id" :class="getTaskFinishClassName(task)" :style="{borderLeftColor: getTaskLevelColor(task.level.code)}"
+               @click="openTaskModal($event, task.id, project.id)">
+            <as-icon ghost
+                     class="task-del-btn" name="close"
+                     @click="delTask(task)"></as-icon>
+            <div class="task-content">
+              <div class="task-name">{{task.name}}</div>
+              <div class="task-tag">
+                <i-tag :color="task.taskTag.color">{{task.taskTag.name}}</i-tag>
+                <i-dropdown @on-click="updateTaskStatus($event, task)">
+                  <i-button size="small"
+                            :type="getTaskStatusColor(task.status.code)">
+                    {{task.status.name}}
+                    <i-icon type="ios-arrow-down"></i-icon>
+                  </i-button>
+                  <i-dropdown-menu slot="list">
+                    <i-dropdown-item v-for="status in taskStatus"
+                                     :key="status.code" :name="status.code">
+                      {{status.name}}
+                    </i-dropdown-item>
+                  </i-dropdown-menu>
+                </i-dropdown>
+              </div>
             </div>
           </div>
+          <i-button class="load-finish-task-btn" size="small" type="info"
+                    v-show="showLoadingFinishTaskBtn(project)"
+                    @click="loadingFinishTasks(project)">
+            加载已完成任务
+          </i-button>
         </div>
-        <i-button class="load-finish-task-btn" size="small" type="info"
-                  v-show="showLoadingFinishTaskBtn(project)"
-                  @click="loadingFinishTasks(project)">
-          加载已完成任务
+        <i-button class="new-task-btn" size="small"
+                  @click="openTaskModal($event, -1, project.id)">
+          <as-icon></as-icon>
         </i-button>
-      </div>
-      <i-button class="new-task-btn" size="small"
-                @click="openTaskModal($event, -1, project.id)">
-        <as-icon></as-icon>
-      </i-button>
-    </i-card>
-    <i-card class="project-item new">
-      <as-icon size="large" text="创建新项目"
-               @click="openProjectModal(-1)"></as-icon>
-    </i-card>
+      </i-card>
+      <i-card class="project-item new">
+        <as-icon size="large" text="创建新项目"
+                 @click="openProjectModal(-1)"></as-icon>
+      </i-card>
+    </draggable>
     <as-modal title="项目设置"
               v-model="showProject"
               :ok="projectSubmit">
@@ -151,6 +156,7 @@
   import asModal from 'components/as-modal'
   import asForm from 'components/as-form'
   import asRadio from 'components/as-radio'
+  import draggable from 'vuedraggable'
   import Project from 'model/project'
   import Task from 'model/task'
   import TaskTag from 'model/taskTag'
@@ -180,6 +186,12 @@
         projects: [],
         tasks: [],
         taskTags: [],
+        draggableOptions: {
+          // 不能拖拽的对象
+          filter: '.new',
+          // 只有指定模块可以触发拖拽
+          handle: '.ivu-card-head'
+        },
         projectRules: {
           name: [
             {
@@ -479,13 +491,19 @@
             this._refreshProjectTasks(project, res.data)
           }
         })
+      },
+      dragEndHandler () {
+        this.$api.project.sort(this.projects).then(() => {
+          this.$Message.success('排序成功')
+        })
       }
     },
     components: {
       asIcon,
       asModal,
       asForm,
-      asRadio
+      asRadio,
+      draggable
     }
   }
 </script>
@@ -498,6 +516,9 @@
     margin 0 15px
     flex-grow 1
     overflow-y auto
+    .project-draggable-wrapper
+      /*flex-grow 1*/
+      display flex
     .project-item
       flex 0 0 300px
       display flex

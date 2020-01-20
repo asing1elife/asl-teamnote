@@ -22,7 +22,7 @@ public class ProjectModel extends BaseModel {
     private Integer indexNo;
 
     @Column
-    private Integer taskNum;
+    private Integer taskNum = 0;
 
     @ManyToOne
     private OrganizationModel organization;

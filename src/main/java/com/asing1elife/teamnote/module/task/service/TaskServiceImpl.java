@@ -36,6 +36,9 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
      * 获取对应组织和名称的任务列表
      */
     public List<TaskModel> getOrganizationTasksByName(long organizationId, String taskName) {
+        // 模糊匹配
+        taskName = String.format("%%%s%%", taskName);
+
         return repository.findByProject_Organization_idAndNameLike(organizationId, taskName);
     }
 

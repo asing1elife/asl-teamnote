@@ -7,6 +7,8 @@ import com.asing1elife.teamnote.model.ProjectModel;
 import com.asing1elife.teamnote.module.project.service.ProjectServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController extends BaseController<ProjectModel, ProjectServiceImpl> {
@@ -17,6 +19,16 @@ public class ProjectController extends BaseController<ProjectModel, ProjectServi
             @Override
             public void doHandler(ResponseData responseData) {
                 responseData.setData(service.findByOrganizationId(organizationId));
+            }
+        }.handle();
+    }
+
+    @PostMapping("/sort")
+    public ResponseData sort(@RequestBody List<ProjectModel> projects) {
+        return new ControllerHandler() {
+            @Override
+            public void doHandler(ResponseData responseData) {
+                service.sortProjects(projects);
             }
         }.handle();
     }
