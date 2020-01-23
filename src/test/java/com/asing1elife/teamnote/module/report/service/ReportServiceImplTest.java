@@ -21,7 +21,7 @@ public class ReportServiceImplTest {
     @Test
     @Transactional
     public void getReportByType() {
-        long dailyId = 25;
+        long dailyId = 4;
         String typeCode = ReportType.RETY_Year.getRealCode();
 
         ReportModel report = reportService.getReportByDailyAndType(dailyId, typeCode);

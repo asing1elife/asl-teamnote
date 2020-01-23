@@ -144,22 +144,31 @@
               width="70%"
               v-model="yearReportShow">
       <div slot="header" class="ivu-modal-header-inner">
-        年报
+        {{report.name}}
       </div>
       <i-alert show-icon>
         汇总数据
         <as-icon stop
                  name="pie-chart" size="large" color="info" slot="icon"></as-icon>
         <div slot="desc">
-          <p>今年共计工作 {{report.dayNum}} 天，其中有 {{report.dayExtraNum}} 天在加班</p>
-          <p>今年的 {{report.projectNum}} 个项目，共计创建了 {{report.taskNum}} 个任务，已完成 {{report.taskFinishNum}} 个</p>
+          <p>今年共计工作 {{report.monthNum}} 个月， {{report.dayNum}} 天，其中有 {{report.dayExtraNum}} 天在加班，加班率达到 {{report.dayExtraPercent}}%</p>
+          <p>今年的 {{report.projectNum}} 个项目，共计创建了 {{report.taskNum}} 个任务，已完成 {{report.taskFinishNum}} 个，完成率达到 {{report.taskFinishPercent}}%</p>
+        </div>
+      </i-alert>
+      <i-alert show-icon
+               type="success">
+        项目数据
+        <as-icon stop
+                 name="podcast" size="large" color="success" slot="icon"></as-icon>
+        <div slot="desc"
+             v-html="report.projectMemo">
         </div>
       </i-alert>
       <i-alert show-icon
                type="success">
         任务数据
         <as-icon stop
-                 name="podcast" size="large" color="success" slot="icon"></as-icon>
+                 name="snapchat-circle" size="large" color="success" slot="icon"></as-icon>
         <div slot="desc"
              v-html="report.taskTagMemo">
         </div>
@@ -597,6 +606,8 @@
           padding-right 10px
           .ivu-dropdown
             display none
+            #asIcon
+              width 100%
           &:hover
             .ivu-dropdown
               display block

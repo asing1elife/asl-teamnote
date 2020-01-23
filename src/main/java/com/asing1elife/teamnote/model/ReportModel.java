@@ -38,7 +38,13 @@ public class ReportModel extends BaseModel {
     private Integer taskFinishNum;
 
     @Column
+    private Integer taskFinishPercent;
+
+    @Column
     private Integer projectNum;
+
+    @Column
+    private String projectMemo;
 
     @Column
     private String taskTagMemo;
@@ -48,6 +54,12 @@ public class ReportModel extends BaseModel {
 
     @Column
     private Integer dayExtraNum;
+
+    @Column
+    private Integer dayExtraPercent;
+
+    @Column
+    private Integer monthNum;
 
     @Column
     private String monthMemo;
@@ -69,15 +81,18 @@ public class ReportModel extends BaseModel {
     public String toString() {
         return "ReportModel{" +
           "name='" + name + '\'' +
-          ", taskNum=" + taskNum +
-          ", taskFinishNum=" + taskFinishNum +
-          ", projectNum=" + projectNum +
-          ", taskTagMemo='" + taskTagMemo + '\'' +
-          ", dayNum=" + dayNum +
-          ", dayExtraNum=" + dayExtraNum +
-          ", monthMemo='" + monthMemo + '\'' +
-          ", dayMemo='" + dayMemo + '\'' +
-          ", type=" + type +
+          "\n, taskNum=" + taskNum +
+          "\n, taskFinishNum=" + taskFinishNum +
+          "\n, taskFinishPercent=" + taskFinishPercent +
+          "\n, projectNum=" + projectNum +
+          "\n, projectMemo='" + projectMemo + '\'' +
+          "\n, taskTagMemo='" + taskTagMemo + '\'' +
+          "\n, dayNum=" + dayNum +
+          "\n, dayExtraNum=" + dayExtraNum +
+          "\n, monthNum=" + monthNum +
+          "\n, monthMemo='" + monthMemo + '\'' +
+          "\n, dayMemo='" + dayMemo + '\'' +
+          "\n, type=" + type +
           '}';
     }
 }

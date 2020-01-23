@@ -97,7 +97,9 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
 
         int taskNum;
         int taskFinishNum = 0;
+        int taskFinishPercent;
         int projectNum;
+        String projectMemo;
         String taskTagMemo;
 
         // 获取该组织该年度所有任务
@@ -139,13 +141,35 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
 
         // 项目数量
         projectNum = projectMap.size();
+        // 项目备注
+        projectMemo = wrapProjectMemo(projectMap);
         // 任务标签备注
         taskTagMemo = wrapTaskTagMemo(taskTagMap);
+        // 任务完成率
+        taskFinishPercent = calcPercent(taskFinishNum, taskNum);
 
         report.setTaskNum(taskNum);
         report.setTaskFinishNum(taskFinishNum);
+        report.setTaskFinishPercent(taskFinishPercent);
         report.setProjectNum(projectNum);
+        report.setProjectMemo(projectMemo);
         report.setTaskTagMemo(taskTagMemo);
+    }
+
+    /**
+     * 包装项目备注
+     */
+    private String wrapProjectMemo(Map<ProjectModel, List<TaskModel>> projectMap) {
+        StringBuilder memo = new StringBuilder();
+
+        for (ProjectModel project : projectMap.keySet()) {
+            List<TaskModel> tasks = projectMap.get(project);
+
+            // 包装任务备注
+            memo.append(wrapTaskMemoByType(tasks, project.getName()));
+        }
+
+        return memo.toString();
     }
 
     /**
@@ -155,21 +179,43 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
         StringBuilder memo = new StringBuilder();
 
         for (TaskTagModel taskTag : taskTagMap.keySet()) {
-            // 获取该标签所有任务
             List<TaskModel> tasks = taskTagMap.get(taskTag);
 
-            memo.append(String.format("[ %s ] 类任务共计 %s 个，", taskTag.getName(), tasks.size()));
-            memo.append(String.format("已完成 %s 个", calcTaskFinishNumByTaskTag(tasks)));
-            memo.append("<br>");
+            // 包装任务备注
+            memo.append(wrapTaskMemoByType(tasks, taskTag.getName()));
         }
 
         return memo.toString();
     }
 
     /**
-     * 计算指定标签任务列表的完成数
+     * 根据类型包装任务备注
      */
-    private int calcTaskFinishNumByTaskTag(List<TaskModel> tasks) {
+    private String wrapTaskMemoByType(List<TaskModel> tasks, String typeName) {
+        StringBuilder memo = new StringBuilder();
+
+        int taskNum = tasks.size();
+        int taskFinishNum = calcTaskFinishNum(tasks);
+        int taskFinishPercent = calcPercent(taskFinishNum, taskNum);
+
+        memo.append(String.format("[ %s ] 任务共计 %s 个，", typeName, tasks.size()));
+        memo.append(String.format("已完成 %s 个，完成率达到 %s%%", taskFinishNum, taskFinishPercent));
+        memo.append("<br>");
+
+        return memo.toString();
+    }
+
+    /**
+     * 计算百分比
+     */
+    private int calcPercent(double finishNum, double totalNum) {
+        return (int) (finishNum / totalNum * 100D);
+    }
+
+    /**
+     * 计算任务列表的完成数
+     */
+    private int calcTaskFinishNum(List<TaskModel> tasks) {
         int taskFinishNum = 0;
 
         for (TaskModel task : tasks) {
@@ -191,12 +237,15 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
         int dayNum = 0;
         int dayRestNum = 0;
         int dayExtraNum = 0;
+        int dayExtraPercent = 0;
 
         // 月度详细数据
         int monthDayMaxNum = 0;
         int monthDayMinNum = 0;
+        int monthDayExtraNum = 0;
         String monthDayMaxMemo = "";
-        String montyDayMinMemo = "";
+        String monthDayMinMemo = "";
+        String monthDayExtraMemo = "";
 
         // 日期详细数据
         int dayTaskMaxNum = 0;
@@ -208,21 +257,14 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
         for (DailyModel daily : dailies) {
             List<DailyRecordModel> dailyRecords = daily.getDailyRecords();
 
+            // 当前月份的总天数
             int nowMonthDayNum = dailyRecords.size();
-
-            // 记录工作时间最长的天数
-            if (monthDayMaxNum < nowMonthDayNum) {
-                monthDayMaxNum = nowMonthDayNum;
-                // 包装详细描述
-                monthDayMaxMemo = wrapMonthMemo(daily, true);
-            }
-
-            // 计算工作时间最短的天数
-            if (monthDayMinNum > nowMonthDayNum || monthDayMinNum == 0) {
-                monthDayMinNum = nowMonthDayNum;
-                // 包装详细描述
-                montyDayMinMemo = wrapMonthMemo(daily, false);
-            }
+            // 当前月休息天数
+            int nowMonthDayRestNum = 0;
+            // 当月加班天数
+            int nowMonthDayExtraNum = 0;
+            // 当前月有效工作日
+            int nowMonthEffectiveDayNum;
 
             // 天数累加
             dayNum += nowMonthDayNum;
@@ -242,21 +284,51 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
                 // 休息日累加
                 if (dailyRecord.getRest()) {
                     dayRestNum++;
+                    nowMonthDayRestNum++;
                 }
 
                 // 加班日累加
                 if (dailyRecord.getExtra()) {
                     dayExtraNum++;
+                    nowMonthDayExtraNum++;
                 }
+            }
+
+            // 当前月有效天数 = 当前月总天数 - 当前月休息天数
+            nowMonthEffectiveDayNum = nowMonthDayNum - nowMonthDayRestNum;
+
+            // 记录工作时间最长的天数
+            if (monthDayMaxNum < nowMonthEffectiveDayNum) {
+                monthDayMaxNum = nowMonthEffectiveDayNum;
+                // 包装详细描述
+                monthDayMaxMemo = wrapMonthMemo(daily, "最漫长");
+            }
+
+            // 计算工作时间最短的天数
+            if (monthDayMinNum > nowMonthEffectiveDayNum || monthDayMinNum == 0) {
+                monthDayMinNum = nowMonthEffectiveDayNum;
+                // 包装详细描述
+                monthDayMinMemo = wrapMonthMemo(daily, "最轻松");
+            }
+
+            // 计算加班最多的天数
+            if (monthDayExtraNum < nowMonthDayExtraNum) {
+                monthDayExtraNum = nowMonthDayExtraNum;
+                // 包装详细描述
+                monthDayExtraMemo = wrapMonthMemo(daily, "最辛苦");
             }
         }
 
         // 工作天数修正，需要减去休息日
         dayNum -= dayRestNum;
+        // 加班率
+        dayExtraPercent = calcPercent(dayExtraNum, dayNum);
 
         report.setDayNum(dayNum);
         report.setDayExtraNum(dayExtraNum);
-        report.setMonthMemo(String.format("%s<br>%s", monthDayMaxMemo, montyDayMinMemo));
+        report.setDayExtraPercent(dayExtraPercent);
+        report.setMonthNum(dailies.size());
+        report.setMonthMemo(String.format("%s<br>%s<br>%s", monthDayMaxMemo, monthDayExtraMemo, monthDayMinMemo));
         report.setDayMemo(dayMemo);
     }
 
@@ -278,16 +350,40 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
     /**
      * 包装月份备注
      */
-    private String wrapMonthMemo(DailyModel daily, boolean max) {
+    private String wrapMonthMemo(DailyModel daily, String typeName) {
         StringBuilder monthMemo = new StringBuilder();
 
         List<DailyRecordModel> dailyRecords = daily.getDailyRecords();
 
-        monthMemo.append(String.format("今年最%s的一个月是 %s 月，共计工作了 %s 天，", max ? "辛苦" : "轻松",
-          daily.getMonth(), dailyRecords.size()));
-        monthMemo.append(String.format("其中有 %s 天在加班", calcDayExtraNum(dailyRecords)));
+        // 休息天数
+        int dayRestNum = calcDayRestNum(dailyRecords);
+        // 有效天数
+        int effectiveDayNum = dailyRecords.size() - dayRestNum;
+        // 加班天数
+        int dayExtraNum = calcDayExtraNum(dailyRecords);
+        // 加班比率
+        int dayExtraPercent = calcPercent(dayExtraNum, effectiveDayNum);
+
+        monthMemo.append(String.format("今年%s的一个月是 %s 月，共计工作了 %s 天，", typeName,
+          daily.getMonth(), effectiveDayNum));
+        monthMemo.append(String.format("其中有 %s 天在加班，加班率达到 %s%%", dayExtraNum, dayExtraPercent));
 
         return monthMemo.toString();
+    }
+
+    /**
+     * 计算休息天数
+     */
+    private int calcDayRestNum(List<DailyRecordModel> dailyRecords) {
+        int dayRestNum = 0;
+
+        for (DailyRecordModel dailyRecord : dailyRecords) {
+            if (dailyRecord.getRest()) {
+                dayRestNum++;
+            }
+        }
+
+        return dayRestNum;
     }
 
     /**

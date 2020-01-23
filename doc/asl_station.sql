@@ -203,14 +203,26 @@ WHERE
 -- 创建报告表
 CREATE TABLE al_report (
   id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
-  name VARCHAR(255) COMMENT '名称',
-  organization_id BIGINT COMMENT '所属组织',
-  daily_id BIGINT COMMENT '所属日志',
-  type_code VARCHAR(255) COMMENT '类型',
-  createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  updateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  CONSTRAINT fk_report_organization FOREIGN KEY (organization_id) REFERENCES al_organization (id),
-  CONSTRAINT fk_report_daily FOREIGN KEY (daily_id) REFERENCES al_daily (id)
+  name VARCHAR(255) NULL COMMENT '名称',
+  organization_id BIGINT NULL COMMENT '所属组织',
+  daily_id BIGINT NULL COMMENT '所属日志',
+  taskNum INT DEFAULT 0 NULL COMMENT '任务数量',
+  taskFinishNum INT DEFAULT 0 NULL COMMENT '任务完成数量',
+  taskFinishPercent INT NULL COMMENT '任务完成率',
+  projectNum INT DEFAULT 0 NULL COMMENT '项目数量',
+  projectMemo VARCHAR(255) NULL COMMENT '项目备注',
+  taskTagMemo VARCHAR(255) NULL COMMENT '任务标签备注',
+  dayNum VARCHAR(255) NULL COMMENT '工作天数',
+  dayExtraNum VARCHAR(255) NULL COMMENT '工作加班天数',
+  dayExtraPercent INT NULL COMMENT '加班率',
+  monthNum INT NULL COMMENT '工作月数',
+  monthMemo VARCHAR(255) NULL COMMENT '月备注',
+  dayMemo VARCHAR(255) NULL COMMENT '日备注',
+  type_code VARCHAR(255) NULL COMMENT '类型',
+  createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
+  updateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  CONSTRAINT fk_report_daily FOREIGN KEY (daily_id) REFERENCES al_daily (id),
+  CONSTRAINT fk_report_organization FOREIGN KEY (organization_id) REFERENCES al_organization (id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 -- 数据字典新增报告类型
@@ -219,25 +231,3 @@ INSERT INTO
 VALUES
   ('com.asing1elife.teamnote.model.dictionary.ReportType', 'RETY_Month', '月报', '0'),
   ('com.asing1elife.teamnote.model.dictionary.ReportType', 'RETY_Year', '年报', '1');
-
-
-/* 2020-01-23 */
--- 报告表新增字段
-ALTER TABLE al_report
-  ADD COLUMN taskNum INT DEFAULT 0 COMMENT '任务数量' AFTER daily_id,
-  ADD COLUMN taskFinishNum INT DEFAULT 0 COMMENT '任务完成数量' AFTER taskNum,
-  ADD COLUMN projectNum INT DEFAULT 0 COMMENT '项目数量' AFTER taskFinishNum;
-
--- 报告表新增字段
-ALTER TABLE al_report
-  ADD COLUMN taskTagMemo VARCHAR(255) COMMENT '任务标签备注' AFTER projectNum;
-
--- 报告表新增字段
-ALTER TABLE al_report
-  ADD COLUMN dayNum VARCHAR(255) COMMENT '工作天数' AFTER taskTagMemo,
-  ADD COLUMN dayExtraNum VARCHAR(255) COMMENT '工作天数' AFTER dayNum;
-
--- 报告表新增字段
-ALTER TABLE al_report
-  ADD COLUMN monthMemo VARCHAR(255) COMMENT '月备注' AFTER dayExtraNum,
-  ADD COLUMN dayMemo VARCHAR(255) COMMENT '日备注' AFTER monthMemo;
