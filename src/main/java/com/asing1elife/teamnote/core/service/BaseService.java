@@ -44,10 +44,10 @@ public class BaseService<T, Repository extends BaseRepository<T, Long>> implemen
         return all;
     }
 
-    public T getOne(long id) {
+    public T get(long id) {
         T t = repository.getOne(id);
 
-        logger.info("getOne entity -> {}", t);
+        logger.info("get entity -> {}", t);
         return t;
     }
 

@@ -5,10 +5,22 @@
         <h4>年份</h4>
       </div>
       <div class="section-content">
-        <div ref="year" class="section-item" v-for="year in years"
+        <div ref="year" class="section-item"
+             v-for="year in years"
              :key="year"
              @click="getMonthsOfYear($event.target, year)">
-          {{year}}
+          <span>{{year}}</span>
+          <i-dropdown trigger="click">
+            <a href="javascript:">
+              <as-icon name="more-horizontal-f"></as-icon>
+            </a>
+            <i-dropdown-menu slot="list">
+              <i-dropdown-item name="report">
+                <as-icon name="drupal" text="年报" direction="right"
+                         @click="openYearReportModal"></as-icon>
+              </i-dropdown-item>
+            </i-dropdown-menu>
+          </i-dropdown>
         </div>
       </div>
     </div>
@@ -112,7 +124,8 @@
     <as-modal footer-hide
               class-name="daily-report-modal"
               v-model="dailyReportShow">
-      <div slot="header" class="ivu-modal-header-inner">日报
+      <div slot="header" class="ivu-modal-header-inner">
+        日报
         <small>点击面板可以直接复制内容</small>
       </div>
       <i-card :bordered="false"
@@ -126,15 +139,61 @@
         <div v-html="todayImplTaskContent"></div>
       </i-card>
     </as-modal>
+    <as-modal footer-hide
+              class-name="year-report-modal"
+              width="70%"
+              v-model="yearReportShow">
+      <div slot="header" class="ivu-modal-header-inner">
+        年报
+      </div>
+      <i-alert show-icon>
+        汇总数据
+        <as-icon stop
+                 name="pie-chart" size="large" color="info" slot="icon"></as-icon>
+        <div slot="desc">
+          <p>今年共计工作 {{report.dayNum}} 天，其中有 {{report.dayExtraNum}} 天在加班</p>
+          <p>今年的 {{report.projectNum}} 个项目，共计创建了 {{report.taskNum}} 个任务，已完成 {{report.taskFinishNum}} 个</p>
+        </div>
+      </i-alert>
+      <i-alert show-icon
+               type="success">
+        任务数据
+        <as-icon stop
+                 name="podcast" size="large" color="success" slot="icon"></as-icon>
+        <div slot="desc"
+             v-html="report.taskTagMemo">
+        </div>
+      </i-alert>
+      <i-alert show-icon
+               type="warning">
+        月度数据
+        <as-icon stop
+                 name="smiley-f" size="large" color="warning" slot="icon"></as-icon>
+        <div slot="desc"
+             v-html="report.monthMemo">
+        </div>
+      </i-alert>
+      <i-alert show-icon
+               type="error">
+        日数据
+        <as-icon stop
+                 name="spotify" size="large" color="error" slot="icon"></as-icon>
+        <div slot="desc"
+             v-html="report.dayMemo">
+        </div>
+      </i-alert>
+    </as-modal>
   </div>
 </template>
 
 <script>
+  import asIcon from 'components/as-icon'
   import asModal from 'components/as-modal'
   import asEmptyTip from 'components/as-empty-tip'
   import { activeCurrentItem, isTargetTag } from 'assets/scripts/dom'
   import dictionary, { getColor } from 'model/dictionary'
   import DailyRecord from 'model/dailyRecord'
+  import Report from 'model/report'
   import _ from 'lodash'
 
   export default {
@@ -143,12 +202,14 @@
       return {
         loading: false,
         dailyReportShow: false,
+        yearReportShow: false,
         currentYear: null,
         currentMonthId: null,
         currentDay: null,
         todayFinishTaskContent: '',
         todayImplTaskContent: '',
         dailyRecord: new DailyRecord(-1),
+        report: new Report(-1),
         dailies: [],
         years: [],
         months: [],
@@ -182,9 +243,7 @@
       },
       // 获取指定月份所有日期
       _getDailyRecords (dailyId, refreshDay = true) {
-        this.$api.dailyRecord.list({
-          dailyId
-        }).then((res) => {
+        this.$api.dailyRecord.list({dailyId}).then((res) => {
           this.days = res.data
 
           if (refreshDay) {
@@ -462,9 +521,18 @@
             })
           }
         })
+      },
+      openYearReportModal () {
+        this.$api.report.year(this.currentMonthId).then((res) => {
+          if (!_.isString(res.data)) {
+            this.report = new Report(res.data)
+            this.yearReportShow = true
+          }
+        })
       }
     },
     components: {
+      asIcon,
       asModal,
       asEmptyTip
     }
@@ -521,7 +589,7 @@
     .section-content
       overflow-x auto
 
-    .month-section
+    .year-section
       .section-content
         .section-item
           display flex

@@ -10,16 +10,11 @@ public interface DailyRecordRepository extends BaseRepository<DailyRecordModel, 
     /**
      * 获取指定日志所有记录
      */
-    List<DailyRecordModel> findByDaily_IdOrderByDayAsc(long dailyId);
-
-    /**
-     * 获取指定月份加班的日志记录
-     */
-    List<DailyRecordModel> findByDaily_IdAndExtraIsTrue(long dailyId);
+    List<DailyRecordModel> findByDailyIdOrderByDayAsc(long dailyId);
 
     /**
      * 获取指定日期的日志记录
      */
-    DailyRecordModel getByDaily_IdAndDay(long dailyId, int day);
+    DailyRecordModel getByDailyIdAndDay(long dailyId, int day);
 
 }

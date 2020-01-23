@@ -22,7 +22,7 @@ public class TaskModel extends BaseModel {
     @Column
     private String description;
 
-    @OneToOne
+    @ManyToOne
     private TaskTagModel taskTag;
 
     @ManyToOne

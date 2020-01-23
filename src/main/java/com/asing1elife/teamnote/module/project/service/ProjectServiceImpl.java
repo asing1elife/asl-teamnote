@@ -15,14 +15,14 @@ public class ProjectServiceImpl extends BaseService<ProjectModel, ProjectReposit
      * 获取指定组织所有项目
      */
     public List<ProjectModel> findByOrganizationId(Long organizationId) {
-        return repository.findByOrganization_IdOrderByIndexNoAsc(organizationId);
+        return repository.findByOrganizationIdOrderByIndexNoAsc(organizationId);
     }
 
     /**
      * 增加项目任务数量
      */
     public void addProjectTaskNum(long projectId) {
-        ProjectModel project = super.getOne(projectId);
+        ProjectModel project = super.get(projectId);
         project.addTaskNum();
 
         super.save(project);
@@ -32,7 +32,7 @@ public class ProjectServiceImpl extends BaseService<ProjectModel, ProjectReposit
      * 减少项目任务数量
      */
     public void reduceProjectTaskNum(long projectId) {
-        ProjectModel project = super.getOne(projectId);
+        ProjectModel project = super.get(projectId);
         project.reduceTaskNum();
 
         super.save(project);

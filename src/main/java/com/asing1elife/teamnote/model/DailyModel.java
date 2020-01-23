@@ -1,11 +1,10 @@
 package com.asing1elife.teamnote.model;
 
+import com.google.common.collect.Lists;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -35,9 +34,13 @@ public class DailyModel extends BaseModel {
     @Column
     private Integer totalDay = 0;
 
+    @Transient
+    private List<DailyRecordModel> dailyRecords = Lists.newArrayList();
+
     public DailyModel() { }
 
     public DailyModel(long id) {
         super.setId(id);
     }
+
 }

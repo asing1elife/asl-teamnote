@@ -10,6 +10,6 @@ public interface ProjectRepository extends BaseRepository<ProjectModel, Long> {
     /**
      * 获取指定组织所有项目
      */
-    List<ProjectModel> findByOrganization_IdOrderByIndexNoAsc(Long organizationId);
+    List<ProjectModel> findByOrganizationIdOrderByIndexNoAsc(Long organizationId);
 
 }

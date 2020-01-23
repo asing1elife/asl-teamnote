@@ -22,14 +22,7 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
      * 获取指定日志所有记录
      */
     public List<DailyRecordModel> getDailyRecordsByDaily(long dailyId) {
-        return repository.findByDaily_IdOrderByDayAsc(dailyId);
-    }
-
-    /**
-     * 获取指定月份加班的日志记录
-     */
-    public List<DailyRecordModel> getExtraDailyRecordsByDaily(long dailyId) {
-        return repository.findByDaily_IdAndExtraIsTrue(dailyId);
+        return repository.findByDailyIdOrderByDayAsc(dailyId);
     }
 
     /**
@@ -41,7 +34,7 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
         int currentDay = DateUtil.getCurrentDay();
 
         // 获取当天日志
-        DailyRecordModel dailyRecord = repository.getByDaily_IdAndDay(daily.getId(), currentDay);
+        DailyRecordModel dailyRecord = repository.getByDailyIdAndDay(daily.getId(), currentDay);
 
         // 不存在则创建
         if (dailyRecord == null) {
@@ -62,7 +55,7 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
      * 更新日志记录加班标识
      */
     public void updateDailyRecordExtra(long recordId, boolean isExtra) {
-        DailyRecordModel dailyRecord = super.getOne(recordId);
+        DailyRecordModel dailyRecord = super.get(recordId);
         dailyRecord.setExtra(isExtra);
 
         super.save(dailyRecord);
@@ -72,7 +65,7 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
      * 更新日志记录还班标识
      */
     public void updateDailyRecordRepay(long recordId, boolean isRepay) {
-        DailyRecordModel dailyRecord = super.getOne(recordId);
+        DailyRecordModel dailyRecord = super.get(recordId);
         dailyRecord.setRepay(isRepay);
 
         super.save(dailyRecord);
@@ -83,7 +76,7 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
      */
     @Transactional
     public void updateDailyRecordRest(long recordId, boolean isRest) {
-        DailyRecordModel dailyRecord = super.getOne(recordId);
+        DailyRecordModel dailyRecord = super.get(recordId);
         dailyRecord.setRest(isRest);
 
         super.save(dailyRecord);

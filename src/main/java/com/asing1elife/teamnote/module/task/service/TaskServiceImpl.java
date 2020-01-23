@@ -33,13 +33,23 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
     private ProjectServiceImpl projectService;
 
     /**
+     * 获取指定组织指定年份范围的所有任务
+     */
+    public List<TaskModel> getTasksByOrganizationAndYear(long organizationId, int year) {
+        String beginYear = String.format("%s-01-01", year);
+        String endYear = String.format("%s-12-31", year);
+
+        return repository.queryByOrganizationIdAndYear(organizationId, beginYear, endYear);
+    }
+
+    /**
      * 获取对应组织和名称的任务列表
      */
     public List<TaskModel> getOrganizationTasksByName(long organizationId, String taskName) {
         // 模糊匹配
         taskName = String.format("%%%s%%", taskName);
 
-        return repository.findByProject_Organization_idAndNameLike(organizationId, taskName);
+        return repository.findByProjectOrganizationIdAndNameLike(organizationId, taskName);
     }
 
     @Override
@@ -49,28 +59,28 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
 
         Pageable pageable = PageRequest.of(pageNo, 10, Sort.Direction.ASC, "level.code");
 
-        return repository.findByProject_Id(projectId, pageable);
+        return repository.findByProjectId(projectId, pageable);
     }
 
     /**
      * 获取指定项目未完成的任务列表
      */
     public List<TaskModel> findUnFinishTasksByProjectId(long projectId) {
-        return repository.findByStatusNotAndProject_IdOrderByLevelDescStatusAsc(TaskStatus.TAST_Finish, projectId);
+        return repository.findByStatusNotAndProjectIdOrderByLevelDescStatusAsc(TaskStatus.TAST_Finish, projectId);
     }
 
     /**
      * 获取指定项目已完成的任务列表
      */
     public List<TaskModel> findFinishTasksByProjectId(long projectId) {
-        return repository.findByStatusAndProject_IdOrderByLevelDescStatusAsc(TaskStatus.TAST_Finish, projectId);
+        return repository.findByStatusAndProjectIdOrderByLevelDescStatusAsc(TaskStatus.TAST_Finish, projectId);
     }
 
     /**
      * 获取进行中的任务列表
      */
     public List<TaskModel> findByImplTasks(long organizationId) {
-        return repository.findByProject_Organization_idAndStatus(organizationId, TaskStatus.TAST_Impl);
+        return repository.findByProjectOrganizationIdAndStatus(organizationId, TaskStatus.TAST_Impl);
     }
 
     /**
@@ -80,7 +90,7 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
     public void status(long taskId, long organizationId, String statusCode) {
         TaskStatus status = new TaskStatus(statusCode);
 
-        TaskModel task = super.getOne(taskId);
+        TaskModel task = super.get(taskId);
         task.setStatus(status);
 
         if (status.equals(TaskStatus.TAST_Impl)) {
@@ -153,7 +163,7 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
     @Override
     @Transactional
     public void delete(long id) {
-        TaskModel task = super.getOne(id);
+        TaskModel task = super.get(id);
 
         // 从与之关联的任务日志中删除该任务
         deleteDailyRecordTaskRelate(task);

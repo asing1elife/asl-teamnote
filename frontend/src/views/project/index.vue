@@ -517,7 +517,6 @@
     flex-grow 1
     overflow-y auto
     .project-draggable-wrapper
-      /*flex-grow 1*/
       display flex
     .project-item
       flex 0 0 300px
@@ -525,6 +524,8 @@
       flex-direction column
       margin-right 15px
       &:not(.new)
+        .ivu-card-head
+          cursor move
         .ivu-card-body
           flex-grow 1
           display flex

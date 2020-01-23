@@ -41,7 +41,7 @@ public class BaseController<T, Service extends BaseService> {
         return new ControllerHandler() {
             @Override
             public void doHandler(ResponseData responseData) {
-                responseData.setData(service.getOne(id));
+                responseData.setData(service.get(id));
             }
         }.handle();
     }

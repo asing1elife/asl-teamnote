@@ -5,6 +5,7 @@ import task from './task'
 import taskTag from './taskTag'
 import daily from './daily'
 import dailyRecord from './dailyRecord'
+import report from './report'
 
 const apiObj = {
   common,
@@ -13,7 +14,8 @@ const apiObj = {
   task,
   taskTag,
   daily,
-  dailyRecord
+  dailyRecord,
+  report
 }
 
 export default function install (Vue) {

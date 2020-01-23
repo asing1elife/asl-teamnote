@@ -10,11 +10,16 @@ public interface DailyRepository extends BaseRepository<DailyModel, Long> {
     /**
      * 获取指定机构日志
      */
-    List<DailyModel> findByAndOrganization_IdOrderByYearAscMonthAsc(long organizationId);
+    List<DailyModel> findByOrganizationIdOrderByYearAscMonthAsc(long organizationId);
+
+    /**
+     * 获取指定机构指定年份所有日志
+     */
+    List<DailyModel> findByOrganizationIdAndYear(long organizationId, int year);
 
     /**
      * 获取指定机构指定年月的日志
      */
-    DailyModel getByOrganization_IdAndYearAndMonth(long organizationId, int year, int month);
+    DailyModel getByOrganizationIdAndYearAndMonth(long organizationId, int year, int month);
 
 }

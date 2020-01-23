@@ -198,3 +198,46 @@ SET
   )
 WHERE
   1 = 1;
+
+/* 2020-02-21 */
+-- 创建报告表
+CREATE TABLE al_report (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
+  name VARCHAR(255) COMMENT '名称',
+  organization_id BIGINT COMMENT '所属组织',
+  daily_id BIGINT COMMENT '所属日志',
+  type_code VARCHAR(255) COMMENT '类型',
+  createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  updateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  CONSTRAINT fk_report_organization FOREIGN KEY (organization_id) REFERENCES al_organization (id),
+  CONSTRAINT fk_report_daily FOREIGN KEY (daily_id) REFERENCES al_daily (id)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+-- 数据字典新增报告类型
+INSERT INTO
+  sys_dictionary (category, code, name, indexNo)
+VALUES
+  ('com.asing1elife.teamnote.model.dictionary.ReportType', 'RETY_Month', '月报', '0'),
+  ('com.asing1elife.teamnote.model.dictionary.ReportType', 'RETY_Year', '年报', '1');
+
+
+/* 2020-01-23 */
+-- 报告表新增字段
+ALTER TABLE al_report
+  ADD COLUMN taskNum INT DEFAULT 0 COMMENT '任务数量' AFTER daily_id,
+  ADD COLUMN taskFinishNum INT DEFAULT 0 COMMENT '任务完成数量' AFTER taskNum,
+  ADD COLUMN projectNum INT DEFAULT 0 COMMENT '项目数量' AFTER taskFinishNum;
+
+-- 报告表新增字段
+ALTER TABLE al_report
+  ADD COLUMN taskTagMemo VARCHAR(255) COMMENT '任务标签备注' AFTER projectNum;
+
+-- 报告表新增字段
+ALTER TABLE al_report
+  ADD COLUMN dayNum VARCHAR(255) COMMENT '工作天数' AFTER taskTagMemo,
+  ADD COLUMN dayExtraNum VARCHAR(255) COMMENT '工作天数' AFTER dayNum;
+
+-- 报告表新增字段
+ALTER TABLE al_report
+  ADD COLUMN monthMemo VARCHAR(255) COMMENT '月备注' AFTER dayExtraNum,
+  ADD COLUMN dayMemo VARCHAR(255) COMMENT '日备注' AFTER monthMemo;

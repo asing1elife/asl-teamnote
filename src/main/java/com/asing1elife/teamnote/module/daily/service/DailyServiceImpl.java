@@ -22,12 +22,24 @@ public class DailyServiceImpl extends BaseService<DailyModel, DailyRepository> {
     @Autowired
     private DailyRecordServiceImpl dailyRecordService;
 
+    /**
+     * 获取指定组织指定年份所有日志
+     */
+    public List<DailyModel> getDailiesByOrganizationAndYear(long organizationId, int year) {
+        List<DailyModel> dailies = repository.findByOrganizationIdAndYear(organizationId, year);
+
+        // 获取该月份所有日志
+        dailies.forEach(daily -> daily.setDailyRecords(dailyRecordService.getDailyRecordsByDaily(daily.getId())));
+
+        return dailies;
+    }
+
     @Transactional
     public Map<Integer, List<DailyModel>> getDailiesByYear(long organizationId) {
         // 获取或保存日志及日志记录
         getOrSaveDailyAndRecord(organizationId);
 
-        // 获取所有日志
+        // 获取所有日志，并按年划分
         return generateDailiesOfYear(organizationId);
     }
 
@@ -36,7 +48,7 @@ public class DailyServiceImpl extends BaseService<DailyModel, DailyRepository> {
      */
     public DailyRecordModel getOrSaveDailyAndRecord(long organizationId) {
         // 尝试获取当前年当前月的日志
-        DailyModel currentMonthDaily = repository.getByOrganization_IdAndYearAndMonth(organizationId, DateUtil.getCurrentYear(), DateUtil.getCurrentMonth());
+        DailyModel currentMonthDaily = repository.getByOrganizationIdAndYearAndMonth(organizationId, DateUtil.getCurrentYear(), DateUtil.getCurrentMonth());
 
         // 没有则创建
         if (currentMonthDaily == null) {
@@ -47,6 +59,9 @@ public class DailyServiceImpl extends BaseService<DailyModel, DailyRepository> {
         return dailyRecordService.checkOrSaveDailyRecord(currentMonthDaily, organizationId);
     }
 
+    /**
+     * 获取所有日志，并按年划分
+     */
     private Map<Integer, List<DailyModel>> generateDailiesOfYear(long organizationId) {
         Map<Integer, List<DailyModel>> dailyMap = Maps.newHashMap();
 
@@ -72,7 +87,7 @@ public class DailyServiceImpl extends BaseService<DailyModel, DailyRepository> {
      * 获取按照创建时间排序的日志列表
      */
     private List<DailyModel> getDailiesOrderByYearAndMonth(Long organizationId) {
-        return repository.findByAndOrganization_IdOrderByYearAscMonthAsc(organizationId);
+        return repository.findByOrganizationIdOrderByYearAscMonthAsc(organizationId);
     }
 
     /**
