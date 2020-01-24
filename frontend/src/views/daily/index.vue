@@ -198,7 +198,6 @@
 <script>
   import asIcon from 'components/as-icon'
   import asModal from 'components/as-modal'
-  import asEmptyTip from 'components/as-empty-tip'
   import { activeCurrentItem, isTargetTag } from 'assets/scripts/dom'
   import dictionary, { getColor } from 'model/dictionary'
   import DailyRecord from 'model/dailyRecord'
@@ -542,8 +541,7 @@
     },
     components: {
       asIcon,
-      asModal,
-      asEmptyTip
+      asModal
     }
   }
 </script>

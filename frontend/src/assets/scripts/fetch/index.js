@@ -31,7 +31,7 @@ export function del (options) {
 export function getById ({url, id}) {
   if (id === -1) {
     // 返回一个空对象
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       resolve({
         data: -1
       })

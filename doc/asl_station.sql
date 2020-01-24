@@ -210,14 +210,14 @@ CREATE TABLE al_report (
   taskFinishNum INT DEFAULT 0 NULL COMMENT '任务完成数量',
   taskFinishPercent INT NULL COMMENT '任务完成率',
   projectNum INT DEFAULT 0 NULL COMMENT '项目数量',
-  projectMemo VARCHAR(255) NULL COMMENT '项目备注',
-  taskTagMemo VARCHAR(255) NULL COMMENT '任务标签备注',
+  projectMemo TEXT NULL COMMENT '项目备注',
+  taskTagMemo TEXT NULL COMMENT '任务标签备注',
   dayNum VARCHAR(255) NULL COMMENT '工作天数',
   dayExtraNum VARCHAR(255) NULL COMMENT '工作加班天数',
   dayExtraPercent INT NULL COMMENT '加班率',
   monthNum INT NULL COMMENT '工作月数',
-  monthMemo VARCHAR(255) NULL COMMENT '月备注',
-  dayMemo VARCHAR(255) NULL COMMENT '日备注',
+  monthMemo TEXT NULL COMMENT '月备注',
+  dayMemo TEXT NULL COMMENT '日备注',
   type_code VARCHAR(255) NULL COMMENT '类型',
   createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
   updateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -231,3 +231,26 @@ INSERT INTO
 VALUES
   ('com.asing1elife.teamnote.model.dictionary.ReportType', 'RETY_Month', '月报', '0'),
   ('com.asing1elife.teamnote.model.dictionary.ReportType', 'RETY_Year', '年报', '1');
+
+/* 2020-01-24 */
+-- 创建用户表
+CREATE TABLE al_user (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
+  email VARCHAR(255) COMMENT '邮箱',
+  mobile VARCHAR(255) COMMENT '手机',
+  password VARCHAR(255) COMMENT '密码',
+  nickname VARCHAR(255) COMMENT '昵称',
+  gender VARCHAR(255) COMMENT '性别',
+  birthday DATE COMMENT '生日',
+  status_code VARCHAR(255) COMMENT '状态',
+  createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  updateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间'
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+-- 数据字典新增通用状态
+INSERT INTO
+  sys_dictionary (category, code, name, indexNo)
+VALUES
+  ('com.asing1elife.teamnote.model.dictionary.SimpleStatus', 'SIST_Init', '初始化', '0'),
+  ('com.asing1elife.teamnote.model.dictionary.SimpleStatus', 'SIST_Active', '已激活', '1'),
+  ('com.asing1elife.teamnote.model.dictionary.SimpleStatus', 'SIST_Disable', '已禁用', '2');

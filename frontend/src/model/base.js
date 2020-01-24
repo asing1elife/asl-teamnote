@@ -9,8 +9,12 @@ export default class Base {
   }
 
   // 简易构造函数，等待子类实现
-  _simple (id) {}
+  _simple (id) {
+    this.id = id
+  }
 
   // 复杂构造函数，等待子类实现
-  _complex (data) {}
+  _complex (data) {
+    this.data = data
+  }
 }

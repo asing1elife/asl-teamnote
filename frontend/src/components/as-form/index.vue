@@ -13,11 +13,11 @@
     props: {
       model: {
         type: Object,
-        default: {}
+        default: () => {}
       },
       rules: {
         type: Object,
-        default: {}
+        default: () => {}
       },
       url: {
         type: String,

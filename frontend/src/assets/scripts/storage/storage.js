@@ -16,6 +16,7 @@ class Storage {
     try {
       value = JSON.stringify(value)
     } catch (e) {
+      console.log(e)
     }
 
     this.store.setItem(uri.encode(this.prefix + key), uri.encode(value))
