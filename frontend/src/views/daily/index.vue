@@ -586,13 +586,17 @@
               display none
             .task-item-del-btn
               display inline
+              margin-right 4px
           .task-item-del-btn
             font-size 14px
+            width auto
             height 24px
             padding 0 6px
             display none
           .ivu-tooltip-inner-with-width
             white-space normal
+          .ivu-dropdown
+            margin-right 4px
     .section-content
       overflow-x auto
 
