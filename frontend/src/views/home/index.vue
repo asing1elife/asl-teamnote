@@ -26,9 +26,7 @@
             <div slot="title">
               <i-tag type="border" color="primary">{{index + 1}}.</i-tag>
               <i-tag color="cyan">{{task.project.name}}</i-tag>
-              <i-tag type="border" color="purple"
-                     @click.native="copyToClipboard(task.name)">{{task.name}}
-              </i-tag>
+              <i-tag type="border" color="purple">{{task.name}}</i-tag>
             </div>
             <div slot="description">
               <i-tag :color="task.taskTag.color">{{task.taskTag.name}}</i-tag>

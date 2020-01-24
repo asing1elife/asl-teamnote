@@ -12,6 +12,18 @@ import project from 'views/project'
 
 import daily from 'views/daily'
 
+// vue-router 3.1 后将 replace 和 push 的函数改为返回 Promise
+// Promise 返回 Reject 后如果没有捕获异常就会抛出异常
+// 所以这里对 push 函数进行了重写
+const originalPush = Router.prototype.push
+Router.prototype.push = function push (location, onResolve, onReject) {
+  if (onResolve || onReject) {
+    return originalPush.call(this, location, onResolve, onReject)
+  }
+
+  return originalPush.call(this, location).catch(err => err)
+}
+
 Vue.use(Router)
 
 const router = new Router({
