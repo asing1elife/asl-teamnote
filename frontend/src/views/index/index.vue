@@ -32,7 +32,7 @@
           this.SET_CURRENT_ORGANIZATION()
 
           // 直接返回根目录是因为会自动跳转到组织页
-          this.$router.push('/')
+          this.$router.push('/organizations')
         }
       }
     }

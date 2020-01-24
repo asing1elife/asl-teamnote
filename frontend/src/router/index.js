@@ -56,9 +56,9 @@ router.beforeEach((to, from, next) => {
 
   if (path === '/') {
     // 处于根目录时，默认跳转到组织
-    next({
-      name: 'organization'
-    })
+    // next({
+    //   name: 'organization'
+    // })
   } else {
     next()
   }
