@@ -48,8 +48,8 @@
     data () {
       return {
         user: {
-          username: '15002715747',
-          password: '123456'
+          username: '',
+          password: ''
         },
         rules: {
           username: [
