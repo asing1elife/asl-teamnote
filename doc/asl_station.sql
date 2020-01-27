@@ -239,6 +239,7 @@ CREATE TABLE al_user (
   email VARCHAR(255) COMMENT '邮箱',
   mobile VARCHAR(255) COMMENT '手机',
   password VARCHAR(255) COMMENT '密码',
+  salt VARCHAR(255) COMMENT '密码混淆值',
   nickname VARCHAR(255) COMMENT '昵称',
   gender VARCHAR(255) COMMENT '性别',
   birthday DATE COMMENT '生日',

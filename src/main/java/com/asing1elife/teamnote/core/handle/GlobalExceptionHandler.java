@@ -2,6 +2,11 @@ package com.asing1elife.teamnote.core.handle;
 
 import com.asing1elife.teamnote.core.bean.ResponseData;
 import com.asing1elife.teamnote.core.exception.CustomException;
+import org.apache.shiro.ShiroException;
+import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authz.UnauthenticatedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,6 +28,39 @@ public class GlobalExceptionHandler {
         responseData.setError(e.getMessage());
 
         return responseData;
+    }
+
+    /**
+     * Shiro异常捕获
+     */
+    @ExceptionHandler(ShiroException.class)
+    public ResponseData handleShiroException(ShiroException e) {
+        logger.error(e.getMessage());
+
+        ResponseData responseData = new ResponseData();
+
+        // 判断异常信息
+        responseData.setError(judgeShiroException(e));
+
+        return responseData;
+    }
+
+    /**
+     * 判断Shiro抛出的具体错误类型
+     */
+    private String judgeShiroException(ShiroException e) {
+        if (e instanceof UnauthenticatedException) {
+            return "Authentication";
+        } else if (e instanceof UnknownAccountException) {
+            return "UnknownAccount";
+        } else if (e instanceof DisabledAccountException) {
+            return "DisabledAccount";
+        } else if (e instanceof IncorrectCredentialsException) {
+            return "IncorrectCredentials";
+        } else {
+            return e.getMessage();
+        }
+
     }
 
     /**

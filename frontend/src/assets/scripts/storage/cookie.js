@@ -16,8 +16,6 @@ export default new class Cookie {
 
   /**
    * 根据key获取cookie的值
-   * @param {string} key 键
-   * @returns {object} 值
    */
   get (key) {
     if (!key) {
@@ -39,49 +37,46 @@ export default new class Cookie {
 
   /**
    * 设置cookies
-   * @param key 键
-   * @param value 值
-   * @param options 选项
-   * @returns {Cookie}
    */
   set (key, value, options) {
     options = options || {expires: options}
+
     let expires = options.expires !== undefined ? options.expires : (this.defaults.expires || '')
+
     let expiresType = typeof (expires)
     if (expiresType === 'string' && expires !== '') {
       expires = new Date(expires)
     } else if (expiresType === 'number') {
       expires = new Date(+new Date() + 1000 * this.expiresMultiplier * expires)
     }
+
     if (expires !== '' && 'toGMTString' in expires) {
       expires = ';expires=' + expires.toGMTString()
     }
+
     let path = options.path || this.defaults.path
     path = path ? ';path=' + path : ''
     let domain = options.domain || this.defaults.domain
     domain = domain ? ';domain=' + domain : ''
     let secure = options.secure || this.defaults.secure ? ';secure' : ''
+
     if (options.secure === false) secure = ''
+
     document.cookie = uri.encode(this.prefix + key) + '=' + uri.encode(JSON.stringify(value)) + expires + path + domain + secure
+
     return this
   }
 
   /**
    * 删除cookie
-   * @param {string||array} keys 删除cookie的key
-   * @returns {Cookie}
    */
-  remove (keys) {
-    keys = keys || [keys]
-    for (let i = 0, l = keys.length; i < l; i++) {
-      this.set(keys[i], '', -1)
-    }
+  remove (key) {
+    this.set(key, '', -1)
     return this
   }
 
   /**
    * 获取所有的cookie
-   * @returns {object} cookie对象
    */
   all () {
     let cookie = document.cookie

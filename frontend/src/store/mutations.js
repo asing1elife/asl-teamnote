@@ -3,7 +3,7 @@
 // 引入mutations-types
 import * as types from './mutation-types'
 import { appName } from 'assets/scripts/config'
-import { localStorage } from 'assets/scripts/storage'
+import { sessionStorage, cookieStorage } from 'assets/scripts/storage'
 
 // 定义mutation，其内部是一些修改方法
 const mutations = {
@@ -12,12 +12,24 @@ const mutations = {
   [types.SET_CURRENT_ORGANIZATION] (state, currentOrganization) {
     state.currentOrganization = currentOrganization || appName
 
-    localStorage.set(types.SET_CURRENT_ORGANIZATION, currentOrganization)
+    sessionStorage.set(types.SET_CURRENT_ORGANIZATION, currentOrganization)
   },
   [types.SET_DICTIONARIES] (state, dictionaries) {
     state.dictionaries = dictionaries
 
-    localStorage.set(types.SET_DICTIONARIES, dictionaries)
+    sessionStorage.set(types.SET_DICTIONARIES, dictionaries)
+  },
+  [types.SET_CURRENT_USER] (state, currentUser) {
+    state.currentUser = currentUser
+
+    sessionStorage.set(types.SET_CURRENT_USER, currentUser)
+  },
+  [types.SET_TOKEN] (state, token) {
+    state.token = token
+
+    cookieStorage.set(types.SET_TOKEN, token, {
+      expires: 30
+    })
   }
 }
 

@@ -5,9 +5,11 @@ import com.asing1elife.teamnote.core.controller.BaseController;
 import com.asing1elife.teamnote.core.handle.ControllerHandler;
 import com.asing1elife.teamnote.model.TaskModel;
 import com.asing1elife.teamnote.module.task.service.TaskServiceImpl;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiresAuthentication
 @RequestMapping("/api/tasks")
 public class TaskController extends BaseController<TaskModel, TaskServiceImpl> {
 

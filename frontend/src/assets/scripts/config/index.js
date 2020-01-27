@@ -1,5 +1,5 @@
 // 应用名称
-export const appName = 'teamnote'
+export const appName = 'Teamnote'
 // 接入服务器接口地址根目录
 export const serverBaseUrl = '/teamnote/api'
 

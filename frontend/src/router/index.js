@@ -1,6 +1,10 @@
 import Vue from 'vue'
+import store from 'store'
 import Router from 'vue-router'
 import viewUI from 'view-design'
+import _ from 'lodash'
+
+import login from 'views/login'
 
 import index from 'views/index'
 
@@ -28,6 +32,11 @@ Vue.use(Router)
 
 const router = new Router({
   routes: [
+    {
+      path: '/login',
+      name: 'login',
+      component: login
+    },
     {
       path: '/',
       name: 'index',
@@ -65,14 +74,19 @@ router.beforeEach((to, from, next) => {
   viewUI.LoadingBar.start()
 
   let path = to.path
+  // 尝试获取登录标记
+  let token = store.state.token
 
-  if (path === '/') {
-    // 处于根目录时，默认跳转到组织
-    // next({
-    //   name: 'organization'
-    // })
-  } else {
+  if (_.isString(token) || path === '/login') {
+    // 只有用户已登录或者访问登录页时，路由才能继续执行
     next()
+  } else {
+    viewUI.LoadingBar.finish()
+
+    // 否则直接导向登录页
+    next({
+      name: 'login'
+    })
   }
 })
 

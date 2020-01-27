@@ -1,8 +1,30 @@
 import axios from 'axios'
+import router from 'router'
+import store from 'store'
 import { Message } from 'view-design'
 import * as config from 'assets/scripts/config'
+import _ from 'lodash'
 
 axios.defaults.withCredentials = true
+
+// 清空Token
+function _clearToken () {
+  store.dispatch('setToken', undefined)
+}
+
+// 头文件
+const headers = function () {
+  let token = store.state.token
+
+  // 没有Token就不传入
+  if (!_.isString(token)) {
+    return undefined
+  }
+
+  return {
+    'Authorization': token
+  }
+}
 
 export function get (options) {
   options.method = config.GET
@@ -55,6 +77,9 @@ function _promise (options) {
       credentials: 'include'
     })
 
+    // 获取头文件
+    options.headers = headers()
+
     instance(options).then((response) => {
       let result = response.data
 
@@ -64,13 +89,48 @@ function _promise (options) {
 
       // 全局异常捕获
       if (!result.success) {
-        Message.error(result.data)
+        // 处理授权异常
+        if (!_authorizationExceptionHandler(result)) {
+          // 不是授权异常就输出正常错误数据
+          Message.error(result.data)
+        }
+
+        return false
       }
 
       resolve(result)
-      return false
     }).catch((error) => {
       reject(error)
     })
   })
+}
+
+/**
+ * 处理授权异常
+ */
+function _authorizationExceptionHandler (result) {
+  let message = result.data
+
+  if (message === 'Authentication') {
+    Message.error('没有检测到登录信息')
+  } else if (message === 'UnknownAccount') {
+    Message.error('没有注册的用户名')
+  } else if (message === 'DisabledAccount') {
+    Message.error('被禁用的用户，请联系管理用')
+  } else if (message === 'IncorrectCredentials') {
+    Message.error('用户名和密码不匹配')
+  } else {
+    // 不是授权异常
+    return false
+  }
+
+  // 清空Token
+  _clearToken()
+
+  // 跳转到登录界面
+  router.replace({
+    name: 'login'
+  })
+
+  return true
 }

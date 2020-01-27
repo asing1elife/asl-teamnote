@@ -19,11 +19,6 @@ function generateDictionaries () {
   // 从vuex中获取后端传入的数据字典原始数据
   let dictionaries = store.state.dictionaries
 
-  // 没有获取到，则通过action从后端获取
-  if (!dictionaries) {
-    store.dispatch('getDictionaries')
-  }
-
   _.forEach(dictionaries, (dic) => {
     // 每个数据字典对应的类名
     let className = _.camelCase(dic.className)

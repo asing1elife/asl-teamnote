@@ -5,9 +5,11 @@ import com.asing1elife.teamnote.core.controller.BaseController;
 import com.asing1elife.teamnote.core.handle.ControllerHandler;
 import com.asing1elife.teamnote.model.DailyRecordModel;
 import com.asing1elife.teamnote.module.daily.service.DailyRecordServiceImpl;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiresAuthentication
 @RequestMapping("/api/daily/records")
 public class DailyRecordController extends BaseController<DailyRecordModel, DailyRecordServiceImpl> {
 

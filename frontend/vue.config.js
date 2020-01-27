@@ -30,6 +30,7 @@ module.exports = {
       .set('views', resolve('src/views'))
       .set('components', resolve('src/components'))
       .set('model', resolve('src/model'))
+      .set('router', resolve('src/router'))
       .set('store', resolve('src/store'))
       .set('api', resolve('src/api'))
 

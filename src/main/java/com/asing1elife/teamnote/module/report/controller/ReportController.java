@@ -11,9 +11,11 @@ import com.asing1elife.teamnote.core.controller.BaseController;
 import com.asing1elife.teamnote.core.handle.ControllerHandler;
 import com.asing1elife.teamnote.model.ReportModel;
 import com.asing1elife.teamnote.module.report.service.ReportServiceImpl;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiresAuthentication
 @RequestMapping("/api/reports")
 public class ReportController extends BaseController<ReportModel, ReportServiceImpl> {
 
