@@ -508,7 +508,7 @@
   }
 </script>
 
-<style lang="stylus">
+<style scoped lang="stylus">
   @import "~assets/stylus/variable.styl"
 
   #projectPanel
@@ -524,9 +524,9 @@
       flex-direction column
       margin-right 15px
       &:not(.new)
-        .ivu-card-head
+        & >>> .ivu-card-head
           cursor move
-        .ivu-card-body
+        & >>> .ivu-card-body
           flex-grow 1
           display flex
           flex-direction column
@@ -564,6 +564,7 @@
                 padding-left 10px
                 .task-name
                   color $title-color
+                  line-height 21px
                 .task-tag
                   display flex
                   justify-content space-between
@@ -599,14 +600,15 @@
       align-items center
       .ivu-poptip
         margin-left 10px
-        .ivu-poptip-rel
+        & >>> .ivu-poptip-rel
           display flex
           justify-content center
           align-items center
-        .ivu-poptip-popper
+        & >>> .ivu-poptip-popper
           .ivu-radio-group
             width 100%
             display flex
+            justify-content space-between
             flex-wrap wrap
             .ivu-radio-wrapper
               margin 0 4px
