@@ -14,15 +14,17 @@ const mutations = {
 
     sessionStorage.set(types.SET_CURRENT_ORGANIZATION, currentOrganization)
   },
-  [types.SET_DICTIONARIES] (state, dictionaries) {
-    state.dictionaries = dictionaries
-
-    sessionStorage.set(types.SET_DICTIONARIES, dictionaries)
-  },
   [types.SET_CURRENT_USER] (state, currentUser) {
     state.currentUser = currentUser
 
     sessionStorage.set(types.SET_CURRENT_USER, currentUser)
+  },
+  [types.SET_DICTIONARIES] (state, dictionaries) {
+    state.dictionaries = dictionaries
+
+    cookieStorage.set(types.SET_DICTIONARIES, dictionaries, {
+      expires: 30
+    })
   },
   [types.SET_TOKEN] (state, token) {
     state.token = token

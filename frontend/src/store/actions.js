@@ -20,6 +20,9 @@ export const setToken = ({commit, state}, token) => {
     // 清除缓存中的Token
     commit(types.SET_TOKEN, undefined)
 
+    // 清除缓存中的数据字典
+    commit(types.SET_DICTIONARIES, undefined)
+
     // 清除缓存中的当前用户
     commit(types.SET_CURRENT_USER, undefined)
     sessionStorage.remove(types.SET_CURRENT_USER)
@@ -27,10 +30,6 @@ export const setToken = ({commit, state}, token) => {
     // 清除缓存中的当前机构
     commit(types.SET_CURRENT_ORGANIZATION, undefined)
     sessionStorage.remove(types.SET_CURRENT_ORGANIZATION)
-
-    // 清除缓存中的数据字典
-    commit(types.SET_DICTIONARIES, undefined)
-    sessionStorage.remove(types.SET_DICTIONARIES)
 
     return false
   }
