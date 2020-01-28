@@ -5,6 +5,7 @@ import com.asing1elife.teamnote.core.repository.BaseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,12 +14,7 @@ import org.springframework.data.domain.Sort;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-public class BaseService<T, Repository extends BaseRepository<T, Long>> implements DefaultService {
-
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    protected HttpServletRequest request;
+public class BaseService<T, Repository extends BaseRepository<T, Long>> extends DefaultService {
 
     @Autowired
     protected Repository repository;

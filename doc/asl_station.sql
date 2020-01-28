@@ -255,3 +255,14 @@ VALUES
   ('com.asing1elife.teamnote.model.dictionary.SimpleStatus', 'SIST_Init', '初始化', '0'),
   ('com.asing1elife.teamnote.model.dictionary.SimpleStatus', 'SIST_Active', '已激活', '1'),
   ('com.asing1elife.teamnote.model.dictionary.SimpleStatus', 'SIST_Disable', '已禁用', '2');
+
+/* 2020-01-29 */
+-- 组织表新增用户id
+ALTER TABLE al_organization
+  ADD COLUMN user_id BIGINT COMMENT '所属用户' AFTER id,
+  ADD CONSTRAINT fk_organization_user FOREIGN KEY (user_id) REFERENCES al_user (id);
+
+-- 组织表修改名称唯一约束为名称+用户
+ALTER TABLE al_organization
+  DROP INDEX uni_idx_name,
+  ADD UNIQUE INDEX uni_idx_name (name, user_id);

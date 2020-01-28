@@ -14,6 +14,7 @@ import com.asing1elife.teamnote.model.UserModel;
 import com.asing1elife.teamnote.model.simple.User;
 import com.asing1elife.teamnote.module.user.repository.UserRepository;
 import com.asing1elife.teamnote.shiro.jwt.JWTUtil;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,20 +24,44 @@ public class UserServiceImpl extends BaseService<UserModel, UserRepository> {
     private static final int PASSWORD_SALT_SIZE = 8;
 
     /**
-     * 根据Token获取用户
+     * 获取当前用户
      */
-    public User getUserByToken(String token) {
-        // 从Token中获取用户名
-        String username = JWTUtil.getUsername(token);
+    public UserModel getCurrentUser() {
+        String token = (String) SecurityUtils.getSubject().getPrincipal();
 
-        UserModel userModel = getUserByUsername(username);
+        return getUserByToken(token);
+    }
+
+    /**
+     * 获取当前用户id
+     */
+    public long getCurrentUserId() {
+        UserModel currentUser = getCurrentUser();
+
+        return currentUser == null ? 0L : currentUser.getId();
+    }
+
+    /**
+     * 根据Token获取用户基本信息
+     */
+    public User getSimpleUserByToken(String token) {
+        UserModel userModel = getUserByToken(token);
 
         User user = new User();
-        user.setUsername(username);
 
         BeanUtil.copyProperties(user, userModel);
 
         return user;
+    }
+
+    /**
+     * 根据Token获取用户
+     */
+    private UserModel getUserByToken(String token) {
+        // 从Token中获取用户名
+        String username = JWTUtil.getUsername(token);
+
+        return getUserByUsername(username);
     }
 
     /**

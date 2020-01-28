@@ -29,7 +29,7 @@ public class UserServiceImplTest {
     public void getUserByToken() {
         String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1ODAxNzI2OTEsInVzZXJuYW1lIjoiMTUwMDI3MTU3NDcifQ.34TI75FjoJISyL9YTIdowSldvnDgmEPbO9AY6iVNeFk";
 
-        User user = userService.getUserByToken(token);
+        User user = userService.getSimpleUserByToken(token);
 
         System.out.println(user);
     }

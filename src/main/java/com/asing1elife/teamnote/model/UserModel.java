@@ -41,4 +41,9 @@ public class UserModel extends BaseModel {
     @ManyToOne
     private SimpleStatus status = SimpleStatus.SIST_Init;
 
+    public UserModel() { }
+
+    public UserModel(long id) {
+        super.setId(id);
+    }
 }

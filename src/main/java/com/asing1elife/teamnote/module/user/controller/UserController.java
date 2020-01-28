@@ -27,7 +27,7 @@ public class UserController extends BaseController<UserModel, UserServiceImpl> {
         return new ControllerHandler() {
             @Override
             public void doHandler(ResponseData responseData) {
-                responseData.setData(service.getUserByToken(token));
+                responseData.setData(service.getSimpleUserByToken(token));
             }
         }.handle();
     }
