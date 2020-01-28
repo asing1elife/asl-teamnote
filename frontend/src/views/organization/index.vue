@@ -137,7 +137,7 @@
   }
 </script>
 
-<style lang="stylus">
+<style scoped lang="stylus">
   @import "~assets/stylus/variable.styl"
 
   #organizationPanel
@@ -161,7 +161,7 @@
           overflow hidden
           display flex
           flex-direction column
-          .ivu-card-head
+          & >>> .ivu-card-head
             flex 0 0 37px
             border-bottom none
             padding-bottom 5px
@@ -169,13 +169,13 @@
             transition padding .3s
             p
               font-size $secondary-size
-          .ivu-card-extra
+          & >>> .ivu-card-extra
             display none
             .organization-operate
               display flex
               .as-icon
                 margin 0 3px
-          .ivu-card-body
+          & >>> .ivu-card-body
             padding 0 16px
             margin-bottom 16px
             overflow hidden
@@ -189,12 +189,12 @@
             justify-content center
             align-items center
             border-style dashed
-            .ivu-card-body
+            & >>> .ivu-card-body
               padding 0
               margin 0
           &:hover
-            .ivu-card-head
+            & >>> .ivu-card-head
               padding-right 60px
-            .ivu-card-extra
+            & >>> .ivu-card-extra
               display block
 </style>

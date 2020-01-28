@@ -546,7 +546,7 @@
   }
 </script>
 
-<style lang="stylus">
+<style scoped lang="stylus">
   @import "~assets/stylus/variable.styl"
 
   #dailyPanel
@@ -593,7 +593,7 @@
             height 24px
             padding 0 6px
             display none
-          .ivu-tooltip-inner-with-width
+          & >>> .ivu-tooltip-inner-with-width
             white-space normal
           .ivu-dropdown
             margin-right 4px

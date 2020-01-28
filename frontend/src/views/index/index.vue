@@ -133,6 +133,8 @@
         .ivu-avatar
           background-color $primary-color
           cursor pointer
+        #asIcon
+          width 100%
     .ivu-layout-content
       display flex
       overflow-y hidden
