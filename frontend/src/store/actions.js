@@ -2,7 +2,7 @@
 
 import * as types from './mutation-types'
 import dictionary from 'api/dictionary'
-import { sessionStorage } from 'assets/scripts/storage'
+import { sessionStorage, localStorage } from 'assets/scripts/storage'
 
 // 设置缓存中的数据字典
 export const setDictionaries = ({commit}) => {
@@ -22,6 +22,7 @@ export const setToken = ({commit, state}, token) => {
 
     // 清除缓存中的数据字典
     commit(types.SET_DICTIONARIES, undefined)
+    localStorage.remove(types.SET_DICTIONARIES)
 
     // 清除缓存中的当前用户
     commit(types.SET_CURRENT_USER, undefined)

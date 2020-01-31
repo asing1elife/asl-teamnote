@@ -3,7 +3,7 @@
 // 引入mutations-types
 import * as types from './mutation-types'
 import { appName } from 'assets/scripts/config'
-import { sessionStorage, cookieStorage } from 'assets/scripts/storage'
+import { sessionStorage, localStorage, cookieStorage } from 'assets/scripts/storage'
 
 // 定义mutation，其内部是一些修改方法
 const mutations = {
@@ -22,9 +22,7 @@ const mutations = {
   [types.SET_DICTIONARIES] (state, dictionaries) {
     state.dictionaries = dictionaries
 
-    cookieStorage.set(types.SET_DICTIONARIES, dictionaries, {
-      expires: 30
-    })
+    localStorage.set(types.SET_DICTIONARIES, dictionaries)
   },
   [types.SET_TOKEN] (state, token) {
     state.token = token
