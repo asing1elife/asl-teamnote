@@ -9,7 +9,9 @@ package com.asing1elife.teamnote.module.login.service;
 import com.asing1elife.teamnote.core.service.DefaultService;
 import com.asing1elife.teamnote.model.UserModel;
 import com.asing1elife.teamnote.module.user.service.UserServiceImpl;
+import com.asing1elife.teamnote.shiro.jwt.JWTToken;
 import com.asing1elife.teamnote.shiro.jwt.JWTUtil;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,12 @@ public class LoginServiceImpl extends DefaultService {
         }
 
         // 传入JWT进行对比
-        return JWTUtil.sign(username, encodePassword);
+        String token = JWTUtil.sign(username, encodePassword);
+
+        // 触发shiro登录验证
+        SecurityUtils.getSubject().login(new JWTToken(token));
+
+        return token;
     }
 
 }

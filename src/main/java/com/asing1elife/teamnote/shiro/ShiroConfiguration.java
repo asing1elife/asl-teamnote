@@ -33,7 +33,6 @@ public class ShiroConfiguration {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(customShiroRealm);
 
-
         // 前后端分离项目无法保证session统一，所以关闭原生session
         DefaultSessionStorageEvaluator evaluator = new DefaultSessionStorageEvaluator();
         evaluator.setSessionStorageEnabled(false);

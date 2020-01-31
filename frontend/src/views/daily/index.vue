@@ -619,6 +619,7 @@
       small
         padding-left 5px
         color $sub-color
+        font-size $small-size
     .ivu-card
       margin-bottom 15px
       cursor pointer

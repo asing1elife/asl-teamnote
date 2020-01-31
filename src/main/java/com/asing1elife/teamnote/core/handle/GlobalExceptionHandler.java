@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
      */
     private String judgeShiroException(ShiroException e) {
         if (e instanceof UnauthenticatedException) {
-            return "Authentication";
+            return "Unauthenticated";
         } else if (e instanceof UnknownAccountException) {
             return "UnknownAccount";
         } else if (e instanceof DisabledAccountException) {

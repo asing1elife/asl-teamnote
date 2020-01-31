@@ -6,8 +6,6 @@
  *****************************************************************************/
 package com.asing1elife.teamnote.shiro.jwt;
 
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.springframework.http.HttpStatus;
@@ -20,30 +18,23 @@ import javax.servlet.http.HttpServletResponse;
 
 public class JWTFilter extends BasicHttpAuthenticationFilter {
 
-    // 登录标识
-    private static String LOGIN_SIGN = "Authorization";
-
     /**
      * 检测用户是否登录
      */
     @Override
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
-        HttpServletRequest req = (HttpServletRequest) request;
-
         // 检测header里面是否包含Authorization字段即可
-        String authorization = req.getHeader(LOGIN_SIGN);
-
         // 检测到则返回true，否则返回false
-        return authorization != null;
+        return getAuthorization(request) != null;
 
     }
 
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) {
-        HttpServletRequest req = (HttpServletRequest) request;
-        String header = req.getHeader(LOGIN_SIGN);
+        // 从头文件中获取token
+        String authorization = getAuthorization(request);
 
-        JWTToken token = new JWTToken(header);
+        JWTToken token = new JWTToken(authorization);
 
         // 执行登录的操作又CustomShiroRealm完成，登录失败会抛出异常
         getSubject(request, response).login(token);
@@ -70,24 +61,13 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         return true;
     }
 
-    @Override
-    protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {
-
-        System.out.println(e.getMessage());
-
-        return super.onLoginFailure(token, e, request, response);
-    }
-
     /**
      * 对跨域提供支持
      */
     @Override
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));
-        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
-        httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
+        HttpServletResponse httpServletResponse = getResponse(request, response);
 
         // 跨域时会首先发送一个option请求，这里我们给option请求直接返回正常状态
         if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) {
@@ -96,5 +76,24 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         }
 
         return super.preHandle(request, response);
+    }
+
+    /**
+     * 从头文件中获取token
+     */
+    private String getAuthorization(ServletRequest request) {
+        HttpServletRequest req = (HttpServletRequest) request;
+
+        return req.getHeader(AUTHORIZATION_HEADER);
+    }
+
+    private HttpServletResponse getResponse(ServletRequest request, ServletResponse response) {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
+        httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
+
+        return httpServletResponse;
     }
 }

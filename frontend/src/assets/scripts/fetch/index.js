@@ -82,6 +82,7 @@ function _promise (options) {
 
     instance(options).then((response) => {
       let result = response.data
+      let message = result.data
 
       if (!result) {
         return false
@@ -90,9 +91,9 @@ function _promise (options) {
       // 全局异常捕获
       if (!result.success) {
         // 处理授权异常
-        if (!_authorizationExceptionHandler(result)) {
+        if (!_authorizationExceptionHandler(message)) {
           // 不是授权异常就输出正常错误数据
-          Message.error(result.data)
+          Message.error(message)
         }
 
         return false
@@ -100,7 +101,10 @@ function _promise (options) {
 
       resolve(result)
     }).catch((error) => {
-      reject(error)
+      // 处理授权异常
+      if (!_authorizationExceptionHandler(error.response.data.trace)) {
+        reject(error)
+      }
     })
   })
 }
@@ -108,16 +112,14 @@ function _promise (options) {
 /**
  * 处理授权异常
  */
-function _authorizationExceptionHandler (result) {
-  let message = result.data
-
-  if (message === 'Authentication') {
+function _authorizationExceptionHandler (message) {
+  if (message.indexOf('Unauthenticated') !== -1) {
     Message.error('没有检测到登录信息')
-  } else if (message === 'UnknownAccount') {
+  } else if (message.indexOf('UnknownAccount') !== -1) {
     Message.error('没有注册的用户名')
-  } else if (message === 'DisabledAccount') {
-    Message.error('被禁用的用户，请联系管理用')
-  } else if (message === 'IncorrectCredentials') {
+  } else if (message.indexOf('DisabledAccount') !== -1) {
+    Message.error('被禁用的用户，请联系管理员')
+  } else if (message.indexOf('IncorrectCredentials') !== -1) {
     Message.error('用户名和密码不匹配')
   } else {
     // 不是授权异常

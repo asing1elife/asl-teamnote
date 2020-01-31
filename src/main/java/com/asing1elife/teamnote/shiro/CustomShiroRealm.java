@@ -85,11 +85,12 @@ public class CustomShiroRealm extends AuthorizingRealm {
         }
 
         // 密码验证失败
-        if (!JWTUtil.verify(token, username, user.getPassword())) {
+        boolean verify = JWTUtil.verify(token, username, user.getPassword());
+
+        if (!verify) {
             throw new IncorrectCredentialsException();
         }
 
-        // return new SimpleAuthenticationInfo((PrincipalCollection) user, token);
         return new SimpleAuthenticationInfo(token, token, "realm");
     }
 
