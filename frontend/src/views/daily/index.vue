@@ -592,6 +592,7 @@
             width auto
             height 24px
             padding 0 6px
+            margin 2px 4px 2px 0
             display none
           & >>> .ivu-tooltip-inner-with-width
             white-space normal

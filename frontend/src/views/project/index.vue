@@ -564,7 +564,7 @@
                 padding-left 10px
                 .task-name
                   color $title-color
-                  line-height 21px
+                  line-height 1.5
                 .task-tag
                   display flex
                   justify-content space-between
@@ -581,6 +581,8 @@
                   .ivu-btn
                     background-color $disabled-color !important
                     border-color $disabled-color !important
+            .load-finish-task-btn
+              min-height 24px
           .new-task-btn
             flex 0 0 29px
             margin-bottom 10px
