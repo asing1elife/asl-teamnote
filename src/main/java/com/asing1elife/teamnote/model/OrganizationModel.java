@@ -15,7 +15,6 @@ public class OrganizationModel extends BaseModel {
 
     @JsonIgnore
     @ManyToOne
-
     private UserModel user;
 
     @Column

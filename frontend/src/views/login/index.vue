@@ -36,6 +36,7 @@
           </i-form-item>
         </i-form>
       </i-card>
+      <!--<p class="put-on-record-info">Copyright © 2019 ~ 2020 asing1elife's team 鄂ICP备19016968号</p>-->
     </i-content>
   </i-layout>
 </template>
@@ -135,4 +136,7 @@
                 background-color $error-color
                 color $white-color
                 border none
+    .put-on-record-info
+      position absolute
+      bottom 10px
 </style>
