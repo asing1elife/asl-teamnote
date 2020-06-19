@@ -1,5 +1,5 @@
 <template>
-  <i-layout class="login-wrapper">
+  <i-layout id="loginPanel" class="login-wrapper">
     <i-content class="d-flex justify-content-center align-items-center">
       <i-card shadow
               class="login-card"
@@ -36,7 +36,7 @@
           </i-form-item>
         </i-form>
       </i-card>
-      <!--<p class="put-on-record-info">Copyright © 2019 ~ 2020 asing1elife's team 鄂ICP备19016968号</p>-->
+      <p class="put-on-record-info">Copyright © 2019 ~ 2020 asing1elife's team <a href="http://www.beian.miit.gov.cn" target="_blank">鄂ICP备19016968号-1</a></p>
     </i-content>
   </i-layout>
 </template>
@@ -139,4 +139,7 @@
     .put-on-record-info
       position absolute
       bottom 10px
+      color $white-color
+      a
+        color $white-color
 </style>

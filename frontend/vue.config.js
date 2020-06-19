@@ -8,6 +8,7 @@ module.exports = {
   devServer: {
     // 前端请求的链接
     host: 'localhost',
+    // host: '192.168.31.24',
     // 前端请求的端口
     port: 3000,
     // 代理

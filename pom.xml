@@ -46,6 +46,13 @@
       <scope>runtime</scope>
     </dependency>
 
+    <!-- 数据源使用 Druid -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid-spring-boot-starter</artifactId>
+      <version>1.1.10</version>
+    </dependency>
+
     <!-- 自动为实体类注入setter/getter方法 -->
     <dependency>
       <groupId>org.projectlombok</groupId>
