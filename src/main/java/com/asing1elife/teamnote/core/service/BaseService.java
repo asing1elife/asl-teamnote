@@ -1,23 +1,14 @@
 package com.asing1elife.teamnote.core.service;
 
-import com.asing1elife.teamnote.core.exception.CustomException;
 import com.asing1elife.teamnote.core.repository.BaseRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-public class BaseService<T, Repository extends BaseRepository<T, Long>> extends DefaultService {
-
-    @Autowired
-    protected Repository repository;
+public class BaseService<T, Repository extends BaseRepository<T, Long>> extends PageService<T, Repository> {
 
     public T save(T t) {
         logger.info("save entity -> {}", t);
@@ -29,8 +20,10 @@ public class BaseService<T, Repository extends BaseRepository<T, Long>> extends 
         repository.deleteById(id);
     }
 
-    public Page<T> page(HttpServletRequest request) {
-        throw new CustomException("this method must be override");
+    public Page<T> page(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.DESC, "createTime");
+
+        return getPageData(pageable);
     }
 
     public List<T> findAll(Sort... sort) {

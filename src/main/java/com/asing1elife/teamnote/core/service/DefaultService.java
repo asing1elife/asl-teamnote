@@ -42,4 +42,15 @@ public class DefaultService {
         return user;
     }
 
+    /**
+     * 包装模糊查询的字段值
+     */
+    protected String wrapLikeConditionValue(String conditionValue) {
+        if (conditionValue == null) {
+            conditionValue = "";
+        }
+
+        return String.format("%%%s%%", conditionValue);
+    }
+
 }
