@@ -17,11 +17,11 @@ public class BaseController<T, Service extends BaseService> {
     protected HttpServletRequest request;
 
     @PostMapping("/page")
-    public ResponseData page() {
+    public ResponseData page(@RequestParam Integer page, @RequestParam Integer size) {
         return new ControllerHandler() {
             @Override
             public void doHandler(ResponseData responseData) {
-                responseData.setData(service.page(request));
+                responseData.setData(service.page(page, size));
             }
         }.handle();
     }

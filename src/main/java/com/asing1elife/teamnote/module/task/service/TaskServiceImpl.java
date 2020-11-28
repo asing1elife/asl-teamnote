@@ -53,9 +53,9 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
     }
 
     @Override
-    public Page<TaskModel> page(HttpServletRequest request) {
-        long projectId = Long.valueOf(request.getParameter("projectId"));
-        int pageNo = Integer.valueOf(request.getParameter("pageNo"));
+    public Page<TaskModel> page(int page, int size) {
+        long projectId = Long.parseLong(request.getParameter("projectId"));
+        int pageNo = Integer.parseInt(request.getParameter("pageNo"));
 
         Pageable pageable = PageRequest.of(pageNo, 10, Sort.Direction.ASC, "level.code");
 

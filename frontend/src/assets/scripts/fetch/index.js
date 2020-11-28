@@ -113,6 +113,10 @@ function _promise (options) {
  * 处理授权异常
  */
 function _authorizationExceptionHandler (message) {
+  if (!message) {
+    return false
+  }
+
   if (message.indexOf('Unauthenticated') !== -1) {
     Message.error('没有检测到登录信息')
   } else if (message.indexOf('UnknownAccount') !== -1) {
