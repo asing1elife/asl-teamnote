@@ -1,5 +1,5 @@
 <template>
-  <i-form ref="asForm" :model="model" :rules="rules">
+  <i-form ref="asForm" label-position="top" :model="model" :rules="rules">
     <slot></slot>
     <i-button long type="primary" v-if="button"
               @click="submit">保存

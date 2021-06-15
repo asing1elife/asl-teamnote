@@ -9,6 +9,9 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author asing1elife
+ */
 @RestController
 @RequiresAuthentication
 @RequestMapping("/api/organizations")
@@ -19,7 +22,7 @@ public class OrganizationController extends BaseController<OrganizationModel, Or
         return new ControllerHandler() {
             @Override
             public void doHandler(ResponseData responseData) {
-                responseData.setData(service.getOrganizationsByCurrentUser());
+                responseData.setData(service.findByCurrentUser());
             }
         }.handle();
     }

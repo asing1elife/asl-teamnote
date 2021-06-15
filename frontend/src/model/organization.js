@@ -6,6 +6,7 @@ export default class Organization extends Base {
     this.name = ''
     this.description = ''
     this.star = false
+    this.display = true
   }
 
   _complex (data) {
@@ -13,5 +14,6 @@ export default class Organization extends Base {
     this.name = data.name
     this.description = data.description
     this.star = data.star
+    this.display = data.display
   }
 }
