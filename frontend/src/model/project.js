@@ -6,6 +6,7 @@ export default class Project extends Base {
     this.id = id
     this.name = ''
     this.indexNo = 0
+    this.display = true
     this.organization = new Organization(-1)
   }
 
@@ -13,6 +14,7 @@ export default class Project extends Base {
     this.id = data.id
     this.name = data.name
     this.indexNo = data.indexNo
+    this.display = data.display
     this.organization = new Organization(data.organization)
   }
 }

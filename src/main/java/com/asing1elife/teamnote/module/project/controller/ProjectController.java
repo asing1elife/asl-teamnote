@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author asing1elife
+ */
 @RestController
 @RequiresAuthentication
 @RequestMapping("/api/projects")

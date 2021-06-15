@@ -24,6 +24,9 @@ public class ProjectModel extends BaseModel {
     @Column
     private Integer taskNum = 0;
 
+    @Column
+    private Boolean display = true;
+
     @ManyToOne
     private OrganizationModel organization;
 

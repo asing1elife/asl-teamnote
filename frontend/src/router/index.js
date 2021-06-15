@@ -59,6 +59,14 @@ const router = new Router({
               component: project
             },
             {
+              path: 'all',
+              name: 'all',
+              component: project,
+              props: {
+                all: true
+              }
+            },
+            {
               path: 'dailies',
               name: 'daily',
               component: daily
