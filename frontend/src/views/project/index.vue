@@ -104,10 +104,12 @@
         <i-form-item prop="taskTag" label="任务标签"
                      :show-message="false">
           <div class="task-tag-wrapper">
-            <i-select style="width: 250px;" v-model="task.taskTag.id">
-              <i-option v-for="taskTag in taskTags"
-                        :key="taskTag.id" :value="taskTag.id" :label="taskTag.name"></i-option>
-            </i-select>
+            <i-radio-group v-model="task.taskTag.id">
+              <as-radio v-for="taskTag in taskTags"
+                        :key="taskTag.id" :label="taskTag.id" :color="taskTag.color">
+                {{ taskTag.name }}
+              </as-radio>
+            </i-radio-group>
             <i-poptip width="157"
                       v-model="showTaskTag">
               <as-icon class="add-task-tag-btn" name="plus-circle-f"></as-icon>
@@ -135,12 +137,10 @@
           </div>
         </i-form-item>
         <i-form-item prop="period" label="任务时间"
-                     v-show="task.dateRange"
-                     :label-width="70">
+                     v-show="task.dateRange">
           {{ task.dateRange }}
         </i-form-item>
-        <i-form-item prop="level" label="任务级别"
-                     :label-width="70">
+        <i-form-item prop="level" label="任务级别">
           <i-radio-group v-model="task.levelCode">
             <as-radio v-for="level in taskLevels"
                       :key="level.code" :label="level.code" :color="level.color">
@@ -326,6 +326,7 @@ export default {
 
         if (taskId === -1) {
           this.task.project = this._getCurrentProjectName(projectId)
+          this.task.taskTag.id = this.taskTags[0].id
         }
       })
     },
