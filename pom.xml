@@ -76,7 +76,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>23.5-jre</version>
+      <version>29.0-jre</version>
     </dependency>
 
     <!-- JWT 前后分离项目的 Token 验证依据 -->
