@@ -30,12 +30,4 @@ public class ProjectModel extends BaseModel {
     @ManyToOne
     private OrganizationModel organization;
 
-    public void addTaskNum() {
-        setTaskNum(getTaskNum() + 1);
-    }
-
-    public void reduceTaskNum() {
-        setTaskNum(getTaskNum() - 1);
-    }
-
 }

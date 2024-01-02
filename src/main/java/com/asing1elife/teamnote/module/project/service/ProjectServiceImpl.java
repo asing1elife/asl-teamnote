@@ -34,22 +34,25 @@ public class ProjectServiceImpl extends BaseService<ProjectModel, ProjectReposit
         return repository.findByOrganizationIdAndDisplayIsTrueOrderByIndexNoAsc(organizationId);
     }
 
-    /**
-     * 增加项目任务数量
-     */
-    public void addProjectTaskNum(long projectId) {
-        ProjectModel project = super.get(projectId);
-        project.addTaskNum();
+    @Override
+    public ProjectModel save(ProjectModel project) {
+        if (project.isNew()) {
+            return super.save(project);
+        }
 
-        super.save(project);
+        ProjectModel originalProject = super.get(project.getId());
+        originalProject.setName(project.getName());
+        originalProject.setDisplay(project.getDisplay());
+
+        return super.save(originalProject);
     }
 
     /**
-     * 减少项目任务数量
+     * 增加项目任务数量
      */
-    public void reduceProjectTaskNum(long projectId) {
+    public void syncTaskNum(long projectId, int taskNum) {
         ProjectModel project = super.get(projectId);
-        project.reduceTaskNum();
+        project.setTaskNum(taskNum);
 
         super.save(project);
     }

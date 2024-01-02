@@ -37,17 +37,19 @@ public interface TaskRepository extends BaseRepository<TaskModel, Long> {
     List<TaskModel> findByProjectOrganizationIdAndNameLike(long organizationId, String taskName);
 
     @Query(value =
-      "SELECT " +
-        "ta.* " +
-        "FROM " +
-        "al_task ta, " +
-        "al_project pr " +
-        "WHERE " +
-        "ta.project_id = pr.id AND " +
-        "pr.organization_id = ? AND " +
-        "ta.createTime >= ? AND " +
-        "ta.createTime <= ?",
-      nativeQuery = true)
+        "SELECT " +
+            "ta.* " +
+            "FROM " +
+            "al_task ta, " +
+            "al_project pr " +
+            "WHERE " +
+            "ta.project_id = pr.id AND " +
+            "pr.organization_id = ? AND " +
+            "ta.createTime >= ? AND " +
+            "ta.createTime <= ?",
+        nativeQuery = true)
     List<TaskModel> queryByOrganizationIdAndYear(long organizationId, String beginYear, String endYear);
+
+    Long countByProjectId(long projectId);
 
 }

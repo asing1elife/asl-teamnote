@@ -17,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -151,7 +150,7 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
     public TaskModel save(TaskModel task) {
         // 新增任务时，所属项目中的任务数量需要累加
         if (task.isNew()) {
-            projectService.addProjectTaskNum(task.getProject().getId());
+            syncProjectTaskNum(task.getProject().getId());
         }
 
         return super.save(task);
@@ -169,10 +168,16 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
         deleteDailyRecordTaskRelate(task);
 
         // 删除任务时，所属项目的任务数量需要减少
-        projectService.reduceProjectTaskNum(task.getProject().getId());
+        syncProjectTaskNum(task.getProject().getId());
 
         // 再删除任务
         super.delete(id);
+    }
+
+    private void syncProjectTaskNum(long projectId) {
+        Long taskNum = repository.countByProjectId(projectId);
+
+        projectService.syncTaskNum(projectId, taskNum.intValue());
     }
 
     /**
