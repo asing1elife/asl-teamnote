@@ -48,8 +48,8 @@ public class DailyRecordServiceImpl extends BaseService<DailyRecordModel, DailyR
      * 更新日志记录关联任务
      */
     public void updateDailyRecordTask(DailyRecordModel record) {
-        // 更新任务时超过晚上6点，自动标记为加班
-        record.setExtra(DateUtil.getCurrentHour() > 18);
+        // 更新任务时超过晚上6点或小于早上6点，自动标记为加班
+        record.setExtra(DateUtil.getCurrentHour() > 18 || DateUtil.getCurrentHour() <= 6);
         super.save(record);
     }
 

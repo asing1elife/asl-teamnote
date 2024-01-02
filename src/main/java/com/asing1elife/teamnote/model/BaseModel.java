@@ -23,7 +23,7 @@ public class BaseModel {
     private Date updateTime = DateUtil.getSysDate();
 
     public Boolean isNew() {
-        return getId() <= 0L;
+        return id == null || id <= 0L;
     }
 
     public Long getId() {

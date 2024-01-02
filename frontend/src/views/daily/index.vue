@@ -187,8 +187,10 @@
         日数据
         <as-icon stop
                  name="spotify" size="large" color="error" slot="icon"></as-icon>
-        <div slot="desc"
-             v-html="report.dayMemo">
+        <div slot="desc">
+          <p v-html="report.dayMemo"/>
+          <p>今年最早开始工作的一天是 {{report.minExtraDay}}</p>
+          <p>今年最晚还在工作的一天是 {{ report.maxExtraDay}}</p>
         </div>
       </i-alert>
     </as-modal>

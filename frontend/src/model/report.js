@@ -13,6 +13,8 @@ export default class Report extends Base {
     this.dayNum = 0
     this.dayExtraNum = 0
     this.dayExtraPercent = 0
+    this.minExtraDay = ''
+    this.maxExtraDay = ''
     this.monthNum = 0
     this.monthMemo = ''
     this.dayMemo = ''
@@ -31,6 +33,8 @@ export default class Report extends Base {
     this.dayNum = data.dayNum
     this.dayExtraNum = data.dayExtraNum
     this.dayExtraPercent = data.dayExtraPercent
+    this.minExtraDay = data.minExtraDay
+    this.maxExtraDay = data.maxExtraDay
     this.monthNum = data.monthNum
     this.monthMemo = data.monthMemo
     this.dayMemo = data.dayMemo

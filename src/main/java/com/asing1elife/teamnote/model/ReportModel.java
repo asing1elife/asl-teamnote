@@ -14,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Data
 @Entity
@@ -70,7 +71,13 @@ public class ReportModel extends BaseModel {
     @ManyToOne
     private ReportType type = ReportType.RETY_Year;
 
-    public ReportModel() { }
+    @Column
+    private Date minExtraDay;
+
+    @Column
+    private Date maxExtraDay;
+
+    public ReportModel() {}
 
     public ReportModel(DailyModel daily) {
         this.organization = daily.getOrganization();
@@ -80,19 +87,19 @@ public class ReportModel extends BaseModel {
     @Override
     public String toString() {
         return "ReportModel{" +
-          "name='" + name + '\'' +
-          "\n, taskNum=" + taskNum +
-          "\n, taskFinishNum=" + taskFinishNum +
-          "\n, taskFinishPercent=" + taskFinishPercent +
-          "\n, projectNum=" + projectNum +
-          "\n, projectMemo='" + projectMemo + '\'' +
-          "\n, taskTagMemo='" + taskTagMemo + '\'' +
-          "\n, dayNum=" + dayNum +
-          "\n, dayExtraNum=" + dayExtraNum +
-          "\n, monthNum=" + monthNum +
-          "\n, monthMemo='" + monthMemo + '\'' +
-          "\n, dayMemo='" + dayMemo + '\'' +
-          "\n, type=" + type +
-          '}';
+            "name='" + name + '\'' +
+            "\n, taskNum=" + taskNum +
+            "\n, taskFinishNum=" + taskFinishNum +
+            "\n, taskFinishPercent=" + taskFinishPercent +
+            "\n, projectNum=" + projectNum +
+            "\n, projectMemo='" + projectMemo + '\'' +
+            "\n, taskTagMemo='" + taskTagMemo + '\'' +
+            "\n, dayNum=" + dayNum +
+            "\n, dayExtraNum=" + dayExtraNum +
+            "\n, monthNum=" + monthNum +
+            "\n, monthMemo='" + monthMemo + '\'' +
+            "\n, dayMemo='" + dayMemo + '\'' +
+            "\n, type=" + type +
+            '}';
     }
 }

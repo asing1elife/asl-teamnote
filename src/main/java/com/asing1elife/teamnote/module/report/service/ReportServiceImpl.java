@@ -10,6 +10,7 @@ import com.asing1elife.teamnote.core.exception.CustomException;
 import com.asing1elife.teamnote.core.service.BaseService;
 import com.asing1elife.teamnote.core.util.DateUtil;
 import com.asing1elife.teamnote.model.*;
+import com.asing1elife.teamnote.model.bean.ExtraDayBean;
 import com.asing1elife.teamnote.model.dictionary.ReportType;
 import com.asing1elife.teamnote.model.dictionary.TaskStatus;
 import com.asing1elife.teamnote.module.daily.service.DailyServiceImpl;
@@ -17,9 +18,12 @@ import com.asing1elife.teamnote.module.report.repository.ReportRepository;
 import com.asing1elife.teamnote.module.task.service.TaskServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +39,7 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
     /**
      * 获取指定组织指定类型报告
      */
-    public ReportModel getReportByDailyAndType(long dailyId, String realCode) {
+    public ReportModel wrapByDailyAndType(long dailyId, String realCode) {
         DailyModel daily = dailyService.get(dailyId);
         Long organizationId = daily.getOrganization().getId();
 
@@ -273,6 +277,11 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
                 List<TaskModel> tasks = dailyRecord.getTasks();
 
                 int nowDayTaskNum = tasks.size();
+                // 统计加班任务数量
+                ExtraDayBean extraDay = getDayMaxExtraDay(tasks);
+
+                // 记录年度最晚加班时间
+                wrapExtraDay(report, extraDay);
 
                 // 记录任务最多的天数
                 if (dayTaskMaxNum < nowDayTaskNum) {
@@ -288,7 +297,7 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
                 }
 
                 // 加班日累加
-                if (dailyRecord.getExtra()) {
+                if (dailyRecord.getExtra() || !ObjectUtils.isEmpty(extraDay)) {
                     dayExtraNum++;
                     nowMonthDayExtraNum++;
                 }
@@ -332,6 +341,89 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
         report.setDayMemo(dayMemo);
     }
 
+    private void wrapExtraDay(ReportModel report, ExtraDayBean extraDay) {
+        if (ObjectUtils.isEmpty(extraDay)) {
+            return;
+        }
+
+        Date currentMinExtraDay = extraDay.getMin();
+        Date currentMaxExtraDay = extraDay.getMax();
+        Date minExtraDay = report.getMinExtraDay();
+        Date maxExtraDay = report.getMaxExtraDay();
+
+        int hourOfDay = new DateTime(currentMaxExtraDay).getHourOfDay();
+
+        if (!ObjectUtils.isEmpty(currentMinExtraDay)) {
+            if (ObjectUtils.isEmpty(minExtraDay)) {
+                report.setMinExtraDay(currentMinExtraDay);
+            } else {
+                int minHourOfDay = new DateTime(minExtraDay).getHourOfDay();
+
+                if (hourOfDay > minHourOfDay) {
+                    report.setMinExtraDay(currentMinExtraDay);
+                }
+            }
+        }
+
+        if (!ObjectUtils.isEmpty(currentMaxExtraDay)) {
+            if (ObjectUtils.isEmpty(maxExtraDay)) {
+                report.setMaxExtraDay(currentMaxExtraDay);
+            } else {
+                int maxHourOfDay = new DateTime(maxExtraDay).getHourOfDay();
+
+                if (hourOfDay > maxHourOfDay) {
+                    report.setMaxExtraDay(currentMaxExtraDay);
+                }
+            }
+        }
+    }
+
+    private ExtraDayBean getDayMaxExtraDay(List<TaskModel> tasks) {
+        Date dayMaxExtraDay = null;
+        Date dayMinExtraDay = null;
+
+        for (TaskModel task : tasks) {
+            Date updateTime = task.getUpdateTime();
+
+            int hourOfDay = new DateTime(updateTime).getHourOfDay();
+            if (hourOfDay <= 6) {
+                dayMinExtraDay = getMaxDay(dayMinExtraDay, updateTime, hourOfDay);
+            }
+
+            if (hourOfDay > 18) {
+                dayMaxExtraDay = getMaxDay(dayMaxExtraDay, updateTime, hourOfDay);
+            }
+        }
+
+        if (ObjectUtils.isEmpty(dayMinExtraDay) && ObjectUtils.isEmpty(dayMaxExtraDay)) {
+            return null;
+        }
+
+        return new ExtraDayBean(dayMinExtraDay, dayMaxExtraDay);
+    }
+
+    private Date getMaxDay(Date maxDay, Date currentDay, int hourOfDay) {
+        int minuteOfDay = new DateTime(currentDay).getMinuteOfHour();
+
+        if (ObjectUtils.isEmpty(maxDay)) {
+            maxDay = currentDay;
+        } else {
+            int minHourOfDay = new DateTime(maxDay).getHourOfDay();
+
+            if (hourOfDay > minHourOfDay) {
+                maxDay = currentDay;
+            } else if (hourOfDay == minHourOfDay) {
+                int minMinuteOfDay = new DateTime(maxDay).getMinuteOfHour();
+
+                if (minuteOfDay > minMinuteOfDay) {
+                    maxDay = currentDay;
+                }
+            }
+        }
+
+        return maxDay;
+    }
+
     /**
      * 包装日期备注
      */
@@ -365,7 +457,7 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
         int dayExtraPercent = calcPercent(dayExtraNum, effectiveDayNum);
 
         monthMemo.append(String.format("今年%s的一个月是 %s 月，共计工作了 %s 天，", typeName,
-          daily.getMonth(), effectiveDayNum));
+            daily.getMonth(), effectiveDayNum));
         monthMemo.append(String.format("其中有 %s 天在加班，加班率达到 %s%%", dayExtraNum, dayExtraPercent));
 
         return monthMemo.toString();
@@ -393,7 +485,9 @@ public class ReportServiceImpl extends BaseService<ReportModel, ReportRepository
         int dayExtraNum = 0;
 
         for (DailyRecordModel dailyRecord : dailyRecords) {
-            if (dailyRecord.getExtra()) {
+            ExtraDayBean extraDay = getDayMaxExtraDay(dailyRecord.getTasks());
+
+            if (dailyRecord.getExtra() || !ObjectUtils.isEmpty(extraDay)) {
                 dayExtraNum++;
             }
         }

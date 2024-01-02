@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
@@ -24,7 +23,7 @@ public class ReportServiceImplTest {
         long dailyId = 4;
         String typeCode = ReportType.RETY_Year.getRealCode();
 
-        ReportModel report = reportService.getReportByDailyAndType(dailyId, typeCode);
+        ReportModel report = reportService.wrapByDailyAndType(dailyId, typeCode);
 
         System.out.println(report);
     }

@@ -24,7 +24,7 @@ public class ReportController extends BaseController<ReportModel, ReportServiceI
         return new ControllerHandler() {
             @Override
             public void doHandler(ResponseData responseData) {
-                responseData.setData(service.getReportByDailyAndType(dailyId, type));
+                responseData.setData(service.wrapByDailyAndType(dailyId, type));
             }
         }.handle();
     }
