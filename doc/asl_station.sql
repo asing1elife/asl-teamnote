@@ -380,5 +380,5 @@ ALTER TABLE al_project
 /* 2024-01-02 */
 -- 报告表新增字段
 ALTER TABLE al_report
-  ADD COLUMN minExtraDay DATE COMMENT '最早加班时间' AFTER dayExtraPercent,
-  ADD COLUMN maxExtraDay DATE COMMENT '最晚加班时间' AFTER minExtraDay;
+  ADD COLUMN minExtraDay DATETIME COMMENT '最早加班时间' AFTER dayExtraPercent,
+  ADD COLUMN maxExtraDay DATETIME COMMENT '最晚加班时间' AFTER minExtraDay;
