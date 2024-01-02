@@ -67,6 +67,12 @@ public class DateUtil {
         return DateTime.now().toString(YEAR_MONTH_DAY_HOUR_MINUTE_SECOND);
     }
 
+    public static int getCurrentHour() {
+        DateTime now = DateTime.now();
+
+        return now.getHourOfDay();
+    }
+
     /**
      * 获取当前日期
      */

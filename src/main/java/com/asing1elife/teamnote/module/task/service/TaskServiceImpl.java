@@ -16,8 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
@@ -122,27 +124,12 @@ public class TaskServiceImpl extends BaseService<TaskModel, TaskRepository> {
         List<TaskModel> tasks = record.getTasks();
 
         // 不存在则添加关联
-        if (getCurrentTask(tasks, task) == null) {
+        List<TaskModel> existTasks = tasks.stream().filter(item -> item.getId().equals(task.getId())).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(existTasks)) {
             tasks.add(task);
         }
 
         dailyRecordService.updateDailyRecordTask(record);
-    }
-
-    /**
-     * 从列表中获取当前任务
-     */
-    private TaskModel getCurrentTask(List<TaskModel> tasks, TaskModel task) {
-        TaskModel currentTask = null;
-
-        for (TaskModel tempTask : tasks) {
-            if (tempTask.getId().equals(task.getId())) {
-                currentTask = tempTask;
-                break;
-            }
-        }
-
-        return currentTask;
     }
 
     @Override
