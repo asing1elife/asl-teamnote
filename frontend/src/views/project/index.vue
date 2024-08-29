@@ -33,6 +33,7 @@
                      @click="delTask(task)"></as-icon>
             <div class="task-content">
               <div class="task-name">{{ task.name }}</div>
+              <div class="task-date">{{task.createTime }}</div>
               <div class="task-tag">
                 <i-tag :color="task.taskTag.color">{{ task.taskTag.name }}</i-tag>
                 <i-dropdown @on-click="updateTaskStatus($event, task)">
@@ -431,6 +432,8 @@ export default {
     },
     // 保存并继续
     saveTaskAndContinue () {
+      const originalTask = { ...this.task }
+
       this.taskSubmit().then((res) => {
         if (!res) {
           return
@@ -442,6 +445,8 @@ export default {
         // 重置任务对象
         this.task = new Task(-1)
         this.task.project = project
+        this.task.taskTag.id = originalTask.taskTag.id
+        this.task.level = originalTask.level
       })
     },
     // 获取任务级别颜色
@@ -579,6 +584,9 @@ export default {
               .task-name
                 color $title-color
                 line-height 1.5
+              .task-date
+                font-size 12px
+                font-style italic
               .task-tag
                 display flex
                 justify-content space-between
